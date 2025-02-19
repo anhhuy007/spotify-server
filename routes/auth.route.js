@@ -6,9 +6,10 @@ const router = express.Router();
 router.post('/login', authController.login);
 router.post('/signup', authController.signup);
 router.post('/refresh-token', authController.refreshAccessToken);
-
-// protected routes
-router.use(authenticateToken);
-router.delete('/logout', authController.logout);
+router.post('/google', authController.loginWithGoogle);
+router.delete('/logout', authenticateToken, authController.logout);
+router.post('/forgot-password', authController.sendOTP);
+router.post('/verify-otp', authController.verifyOTP);
+router.post('/reset-password', authController.resetPassword);
 
 export default router;
