@@ -133,13 +133,15 @@ class AlbumService {
 
     let albums = await query.lean();
     albums = albums
-      .filter((album) => { // filter album doesn't have matching artists and songs 
+      .filter((album) => {
+        // filter album doesn't have matching artists and songs
         const hasMatchingArtist = !artist || album.artist_ids.length > 0;
         const hasMatchingSong = !song || album.song_ids.length > 0;
 
         return hasMatchingArtist && hasMatchingSong;
       })
-      .map((album) => ({  // remove duplicate artist
+      .map((album) => ({
+        // remove duplicate artist
         ...album,
         artist_ids: Array.from(
           new Map(
@@ -158,6 +160,25 @@ class AlbumService {
       totalPages,
       items: albums,
     };
+  }
+
+  async getAlbumById(albumId) {
+    const album = await Album.findById(albumId)
+      .populate({
+        path: "artist_ids",
+        select: "name avatar_url",
+      })
+      .populate({
+        path: "song_ids",
+        select: "title image_url",
+      })
+      .lean();
+
+    if (!album) {
+      throw new Error("Album not found");
+    }
+
+    return album;
   }
 }
 

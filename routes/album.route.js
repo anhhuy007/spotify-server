@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get('/popular', albumController.getPopularAlbums);
 router.get('/new', albumController.getNewAlbums);
+
+router.get('/:id', albumController.getAlbumById);
 router.get('/', albumController.getAlbumsWithFilter);
 
 export default router;
