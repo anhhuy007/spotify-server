@@ -1,6 +1,6 @@
 function successResponse(success, message, data) {
     // if using pagination, add the pagination object to the response
-    if (data && typeof data === 'object' && 'total' in data && 'limit' in data) {
+    if (data && typeof data === 'object' && 'page' in data && 'limit' in data && 'total' in data) {
         const pagination = {
             total: data.total,
             limit: data.limit,
@@ -35,7 +35,45 @@ function errorResponse(success, message) {
     }
 }
 
+function validatePaginationOptions(options) {
+    let { page, limit, filter = {} } = options;
+
+    if (typeof page !== 'number') {
+        page = parseInt(page);
+    }
+
+    if (typeof limit !== 'number') {
+        limit = parseInt(limit);
+    }
+
+    if (page < 1) {
+        page = 1;
+    }
+
+    if (limit < 1) {
+        limit = 10;
+    }
+
+    return { page, limit, filter };
+}
+
+function validateSortOptions(options) {
+    let { sortBy, sortOrder } = options;
+
+    if (!sortBy) {
+        sortBy = 'createdAt';
+    }
+
+    if (!sortOrder) {
+        sortOrder = 'desc';
+    }
+
+    return { sortBy, sortOrder };
+}
+
 export default {
     successResponse,
-    errorResponse
+    errorResponse,
+    validatePaginationOptions,
+    validateSortOptions
 }
