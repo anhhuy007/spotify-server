@@ -11,8 +11,9 @@ const getPopularAlbums = asyncHandler(async (req, res) => {
         helperFunc.successResponse(true, "Popular albums retrieved", response)
       );
   } catch (error) {
+    console.log("Get popular albums error: ", error);
     res
-      .status(500)
+      .status(400)
       .json(helperFunc.errorResponse(false, "Failed to get popular albums"));
   }
 });
@@ -24,8 +25,9 @@ const getNewAlbums = asyncHandler(async (req, res) => {
       .status(200)
       .json(helperFunc.successResponse(true, "New albums retrieved", response));
   } catch (error) {
+    console.log("Get new albums error: ", error);
     res
-      .status(500)
+      .status(400)
       .json(helperFunc.errorResponse(false, "Failed to get new albums"));
   }
 });
@@ -37,8 +39,9 @@ const getAlbumsWithFilter = asyncHandler(async (req, res) => {
       .status(200)
       .json(helperFunc.successResponse(true, "Albums retrieved", response));
   } catch (error) {
+    console.log("Get albums with filter error: ", error);
     res
-      .status(500)
+      .status(400)
       .json(helperFunc.errorResponse(false, "Failed to get albums"));
   }
 });
@@ -50,8 +53,9 @@ const getAlbumById = asyncHandler(async (req, res) => {
       .status(200)
       .json(helperFunc.successResponse(true, "Album retrieved", response));
   } catch (error) {
+    console.log("Get album by id error: ", error);
     res
-      .status(500)
+      .status(400)
       .json(helperFunc.errorResponse(false, "Failed to get album"));
   }
 });

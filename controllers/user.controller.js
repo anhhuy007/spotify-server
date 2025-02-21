@@ -15,7 +15,10 @@ const getUserProfile = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Get user profile error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to get user profile"));
   }
 });
 
@@ -32,7 +35,10 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Update user profile error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to update user profile"));
   }
 });
 
@@ -45,7 +51,10 @@ const changePassword = asyncHandler(async (req, res) => {
         helperFunc.successResponse(true, "Password updated successfully", user)
       );
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Change password error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to update password"));
   }
 });
 
