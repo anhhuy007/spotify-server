@@ -10,6 +10,10 @@ router.use("/auth", authRoutes);
 router.use("/user", userRoutes);
 router.use("/album", albumRoutes);
 
+router.get("/", (req, res) => {
+  res.send("Hello from Spotify Clone!");
+});
+
 // protected routes
 
 export default router;

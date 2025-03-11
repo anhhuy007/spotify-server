@@ -48,11 +48,26 @@ async function uploadUsers() {
 
 async function updateUserSchema() {
   try {
-    const bulkOps = await User.collection.initializeUnorderedBulkOp();
-    bulkOps.find({}).update({ $unset: { avatarUrl: 1 } });
-    await bulkOps.execute();
+    console.log("🔄 Updating User schema...");
+    const users = await User.find();
+    console.log(`Found ${users.length} users to update`);
 
-    console.log("✅ User schema updated:", result);
+    for (const user of users) {
+      if (users.dob && user.dob.getTime() !== new Date(user.createdAt).getTime()) {
+        continue;
+      }
+
+      // random date of birth between 1970 and 2000
+      const dob = new Date(
+        new Date(1970, 0, 1).getTime() +
+          Math.random() *
+            (new Date(2000, 0, 1).getTime() - new Date(1970, 0, 1).getTime())
+      );
+    
+      await User.updateOne({ _id: user._id }, { $set: { dob } });
+    }
+
+    console.log("✅ User schema updated:");
   } catch (error) {
     console.error("❌ User schema update error:", error);
   }
@@ -106,6 +121,7 @@ async function uploadData() {
   // await uploadUsers();
   // await updateAlbumData();
   // await updateAlbumReleaseDate();
+  // await updateUserSchema();
 }
 
 export { connectDB, disconnectDB, uploadData };

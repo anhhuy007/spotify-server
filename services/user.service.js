@@ -89,6 +89,19 @@ class ProfileService {
 
         return {};
     }
+
+    async uploadAvatar(userId, avatarUrl) {
+        if (!userId) throw new Error("Invalid user id");
+        if (!avatarUrl) throw new Error("Invalid avatar url");
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { avatar_url: avatarUrl },
+            { new: true }
+        );
+
+        return updatedUser;
+    }
 }
 
 export default new ProfileService();

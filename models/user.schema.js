@@ -6,13 +6,23 @@ const userSchema = new Schema(
     googleId: {
       type: String,
       unique: true,
+      sparse: true, // This allows multiple null values
     },
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    password: String,
+    password: {
+      type: String,
+      validate: {
+        validator: function(v) {
+          // If no googleId, password must be present
+          return this.googleId || v;
+        },
+        message: 'Password is required for non-Google authentication'
+      }
+    },
     username: {
       type: String,
       required: true,
@@ -32,6 +42,10 @@ const userSchema = new Schema(
     theme: {
       type: String,
       default: "light",
+    },
+    dob: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
