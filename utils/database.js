@@ -6,7 +6,7 @@ import Album from "../models/album.schema.js";
 const databaseName = "spotify-clone";
 
 // data files
-const users = JSON.parse(fs.readFileSync("./data/users.json", "utf-8"));
+// const users = JSON.parse(fs.readFileSync("./data/users.json", "utf-8"));
 let connection = null;
 
 async function connectDB() {
