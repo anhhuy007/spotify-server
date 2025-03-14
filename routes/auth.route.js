@@ -12,5 +12,6 @@ router.post('/forgot-password', authController.sendOTP);
 router.post('/verify-otp', authController.verifyOTP);
 router.post('/reset-password', authController.resetPassword);
 router.get('/check-username', authController.checkUsernameExists);
+router.get('/check-email', authController.checkEmailExists);
 
 export default router;

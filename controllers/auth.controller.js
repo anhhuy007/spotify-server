@@ -128,12 +128,26 @@ const checkUsernameExists = asyncHandler(async (req, res) => {
     const existed = await authService.checkUsernameExists(req.query.username);
     res
       .status(200)
-      .json(helperFunc.successResponse(true, "Username exists", { existed }));
+      .json(helperFunc.successResponse(true, "Check username exists", { existed }));
   } catch (error) {
     console.log("Check username error: ", error);
     res
       .status(400)
       .json(helperFunc.errorResponse(false, "Failed to check username"));
+  }
+});
+
+const checkEmailExists = asyncHandler(async (req, res) => {
+  try {
+    const existed = await authService.checkEmailExists(req.query.email);
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Check email exists", { existed }));
+  } catch (error) {
+    console.log("Check email error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to check email"));
   }
 });
 
@@ -147,4 +161,5 @@ export default {
   verifyOTP,
   resetPassword,
   checkUsernameExists,
+  checkEmailExists
 };
