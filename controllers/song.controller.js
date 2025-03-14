@@ -1,0 +1,53 @@
+import asyncHandler from "express-async-handler";
+import helperFunc from "../utils/helperFunc.js";
+import SongService from "../services/song.service.js";
+
+const getSongById = asyncHandler(async (req, res) => {
+  try {
+    const song = await SongService.getSongById(req.params.id);
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Song query successful", song));
+  } catch (error) {
+    res.status(404).json(helperFunc.errorResponse(false, error.message));
+  }
+});
+
+const getPopularSongs = asyncHandler(async (req, res) => {
+  try {
+    const songs = await SongService.getPopularSongs(req.query);
+
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(
+          true,
+          "Popular songs query successful",
+          songs
+        )
+      );
+  } catch (error) {
+    res.status(404).json(helperFunc.errorResponse(false, error.message));
+  }
+});
+
+const getNewSongs = asyncHandler(async (req, res) => {
+  try {
+    const songs = await SongService.getNewSongs(req.query);
+
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(true, "New songs query successful", songs)
+      );
+  } catch (error) {
+    res.status(404).json(helperFunc.errorResponse(false, error.message));
+  }
+});
+
+export default {
+  getSongById,
+  getPopularSongs,
+  getNewSongs
+};

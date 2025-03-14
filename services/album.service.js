@@ -7,7 +7,7 @@ class AlbumService {
   cleanedAlbumData(albums) {
     return albums.map(({ artist_ids, song_ids, ...rest }) => ({
       ...rest,
-      artist: artist_ids.map(({ name }) => name),
+      artists: artist_ids.map(({ name }) => name),
     }));
   }
 
@@ -158,7 +158,7 @@ class AlbumService {
       page: parsedPage,
       limit: parsedLimit,
       totalPages,
-      items: albums,
+      items: this.cleanedAlbumData(albums),
     };
   }
 
@@ -178,7 +178,7 @@ class AlbumService {
       throw new Error("Album not found");
     }
 
-    return album;
+    return this.cleanedAlbumData([album])[0];
   }
 }
 

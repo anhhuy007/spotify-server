@@ -36,7 +36,7 @@ function errorResponse(success, message) {
 }
 
 function validatePaginationOptions(options) {
-    let { page, limit, filter = {} } = options;
+    let { page = 1, limit = 10, filter = {} } = options;
 
     if (typeof page !== 'number') {
         page = parseInt(page);
