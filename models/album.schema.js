@@ -8,23 +8,23 @@ const albumSchema = new Schema(
       required: true,
     },
     artist_ids: {
-      type: [String],
+      type: [Schema.Types.ObjectId],
       required: true,
     },
     release_date: {
       type: Date,
       default: null,
     },
-    like_count: { 
-        type: Number,
-        default: 0
+    like_count: {
+      type: Number,
+      default: 0,
     },
     cover_url: {
       type: String,
       default: "",
     },
     song_ids: {
-      type: [String],
+      type: [Schema.Types.ObjectId],
       required: true,
     },
     create_at: {

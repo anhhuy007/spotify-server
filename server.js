@@ -14,7 +14,7 @@ app.use(express.json());
 
 // mongoose
 connectDB();
-uploadData();
+// uploadData();
 
 // routes
 app.use('/', indexRoutes);
