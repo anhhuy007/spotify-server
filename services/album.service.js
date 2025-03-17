@@ -218,7 +218,7 @@ class AlbumService {
 
         const formattedSongs = songs.map(song => ({
           ...song.toObject(),
-          artist: song.singer_ids, // Đổi tên `singer_ids` thành `artist`
+          singers: song.singer_ids, // Đổi tên `singer_ids` thành `artist`
         })).map(({ singer_ids, author_ids, ...song }) => song); // Xóa `singer_ids` và `author_ids`
 
 
