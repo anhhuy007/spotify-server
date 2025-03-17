@@ -2,7 +2,8 @@ import express from "express";
 import authRoutes from "./auth.route.js";
 import userRoutes from "./user.route.js";
 import albumRoutes from "./album.route.js";
-import songRoutes from "./song.route.js";
+import searchRoutes from "./search.route.js";
+import genreRoutes from "./genre.route.js";
 
 const router = express.Router();
 
@@ -10,7 +11,8 @@ const router = express.Router();
 router.use("/auth", authRoutes);
 router.use("/user", userRoutes);
 router.use("/album", albumRoutes);
-router.use("/song", songRoutes);
+router.use("/search", searchRoutes);
+router.use("/genre", genreRoutes);
 
 router.get("/", (req, res) => {
   res.send("Hello from Spotify Clone!");
