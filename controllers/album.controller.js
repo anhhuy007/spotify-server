@@ -60,9 +60,44 @@ const getAlbumById = asyncHandler(async (req, res) => {
   }
 });
 
+const getAlbumSongs = asyncHandler(async (req, res) => {
+  try{
+    const response = await AlbumService.getAlbumSongs(req.params.id, req.query);
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "All album songs retrieve", response));
+  }
+  catch(error){
+    console.log("Get all albums error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to get album songs"));
+  }
+});
+
+const getAlbumsByArtistNames = asyncHandler(async (req, res) => {
+  try{
+    console.log(req.query);
+
+    const response = await AlbumService.getAlbumsByArtistNames(req.query);
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "All album songs retrieve", response));
+  }
+  catch(error){
+    console.log("Get all albums error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to get album songs"));
+  }
+});
+
 export default {
   getPopularAlbums,
   getNewAlbums,
   getAlbumsWithFilter,
   getAlbumById,
+  getAlbumSongs,
+  getAlbumsByArtistNames,
 };
