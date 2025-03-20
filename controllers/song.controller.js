@@ -46,8 +46,24 @@ const getNewSongs = asyncHandler(async (req, res) => {
   }
 });
 
+const getRandomSongs = asyncHandler(async (req, res) => {
+  try {
+    const { limit } = req.query;
+    const songs = await SongService.getRandomSongs({
+      limit: parseInt(limit) || 10,
+    });
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Random songs fetched", songs));
+  } catch (error) {
+    res.status(500).json(helperFunc.errorResponse(false, error.message));
+  }
+});
+
 export default {
   getSongById,
   getPopularSongs,
-  getNewSongs
+  getNewSongs,
+  getRandomSongs,
 };

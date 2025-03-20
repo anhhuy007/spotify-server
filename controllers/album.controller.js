@@ -1,6 +1,30 @@
 import asyncHandler from "express-async-handler";
-import helperFunc from "../utils/helperFunc.js";
 import AlbumService from "../services/album.service.js";
+import helperFunc from "../utils/helperFunc.js";
+
+const getTopAlbum = async (req, res) => {
+  try {
+    const artists = await AlbumService.getTopAlbum();
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Top album", artists));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getAlsoLike = async (req, res) => {
+  try {
+    const artists = await AlbumService.getAlsoLike();
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Also like top", artists));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const getPopularAlbums = asyncHandler(async (req, res) => {
   try {
@@ -56,18 +80,21 @@ const getAlbumById = asyncHandler(async (req, res) => {
     console.log("Get album by id error: ", error);
     res
       .status(400)
-      .json(helperFunc.errorResponse(false, "Failed to get album"));
+      .json(helperFunc.errorResponse(false, "Failed to get album fggnf"));
   }
 });
 
 const getAlbumSongs = asyncHandler(async (req, res) => {
-  try{
+  try {
     const response = await AlbumService.getAlbumSongs(req.params.id, req.query);
+    console.log("Get album songs: ", response);
+
     res
       .status(200)
-      .json(helperFunc.successResponse(true, "All album songs retrieve", response));
-  }
-  catch(error){
+      .json(
+        helperFunc.successResponse(true, "All album songs retrieve", response)
+      );
+  } catch (error) {
     console.log("Get all albums error: ", error);
     res
       .status(400)
@@ -76,16 +103,16 @@ const getAlbumSongs = asyncHandler(async (req, res) => {
 });
 
 const getAlbumsByArtistNames = asyncHandler(async (req, res) => {
-  try{
-    console.log(req.query);
+  try {
 
     const response = await AlbumService.getAlbumsByArtistNames(req.query);
 
     res
       .status(200)
-      .json(helperFunc.successResponse(true, "All album songs retrieve", response));
-  }
-  catch(error){
+      .json(
+        helperFunc.successResponse(true, "All album songs retrieve", response)
+      );
+  } catch (error) {
     console.log("Get all albums error: ", error);
     res
       .status(400)
@@ -94,6 +121,8 @@ const getAlbumsByArtistNames = asyncHandler(async (req, res) => {
 });
 
 export default {
+  getTopAlbum,
+  getAlsoLike,
   getPopularAlbums,
   getNewAlbums,
   getAlbumsWithFilter,

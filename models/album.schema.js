@@ -7,6 +7,10 @@ const albumSchema = new Schema(
       type: String,
       required: true,
     },
+    artist_ids: {
+      type: [Schema.Types.ObjectId],
+      required: true,
+    },
     release_date: {
       type: Date,
       default: null,

@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // mongoose
 connectDB();
-uploadData();
+// uploadData();
 
 // routes
 app.use('/', indexRoutes);
