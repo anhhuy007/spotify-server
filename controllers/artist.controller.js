@@ -152,6 +152,18 @@ const getAlbumArtistDetail = async (req, res) => {
   }
 };
 
+const getTopArtist = async (req, res) => {
+  try {
+    const artists = await artistService.getTopArtist();
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Top album", artists));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export default {
   getListArtists,
   getArtist,
@@ -162,4 +174,5 @@ export default {
   getListPopularArtistDetail,
   getListFansAlsoLike,
   getAlbumArtistDetail,
+  getTopArtist,
 };

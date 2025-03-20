@@ -35,5 +35,6 @@ router.get(
 
 router.get("/getAlbumArtistDetail/:id", artistController.getAlbumArtistDetail);
 ;
+router.get("/topArtist", artistController.getTopArtist);
 
 export default router;

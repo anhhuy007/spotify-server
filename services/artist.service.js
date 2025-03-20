@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import Artist from "../models/Artist.schema.js";
-import Song from "../models/Song.schema.js";
+import Artist from "../models/artist.schema.js";
+import Song from "../models/song.schema.js";
 import Album from "../models/album.schema.js";
 
 const getListArtists = async (start, end) => {
@@ -107,6 +107,13 @@ const getListFansAlsoLike = async (artistId) => {
   }
 };
 
+const getTopArtist = async () => {
+  try {
+    return await Artist.find({}, "_id name avatar_url followers ");
+  } catch (error) {
+    throw new Error("Get top artist failed");
+  }
+};
 
 export default {
   getListArtists,
@@ -118,4 +125,5 @@ export default {
   getListPopularArtistDetail,
   getListFansAlsoLike,
   getAlbumArtistDetail,
+  getTopArtist,
 };
