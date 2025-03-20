@@ -1,5 +1,6 @@
-import artistService from "../services/artist.service.js";
 import helperFunc from "../utils/helperFunc.js";
+import asyncHandler from "express-async-handler";
+import ArtistService from "../services/artist.service.js";
 
 const getListArtists = async (req, res) => {
   try {
@@ -10,7 +11,7 @@ const getListArtists = async (req, res) => {
       return res.status(400).json({ message: "Invalid start or end values" });
     }
 
-    const artists = await artistService.getListArtists(start, end);
+    const artists = await ArtistService.getListArtists(start, end);
 
     res
       .status(200)
@@ -24,7 +25,7 @@ const getArtist = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const artist = await artistService.getArtist(id);
+    const artist = await ArtistService.getArtist(id);
 
     res
       .status(200)
@@ -38,7 +39,7 @@ const getListDiscographyAlbum = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const albums = await artistService.getListDiscographyAlbum(id);
+    const albums = await ArtistService.getListDiscographyAlbum(id);
     console.log(albums);
     res
       .status(200)
@@ -52,7 +53,7 @@ const getListDiscographyEP = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const albums = await artistService.getListDiscographyEP(id);
+    const albums = await ArtistService.getListDiscographyEP(id);
     console.log(albums);
 
     res
@@ -67,7 +68,7 @@ const getListDiscographyCollection = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const albums = await artistService.getListDiscographyCollection(id);
+    const albums = await ArtistService.getListDiscographyCollection(id);
 
     res
       .status(200)
@@ -81,7 +82,7 @@ const getListDiscographyHave = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const albums = await artistService.getListDiscographyHave(id);
+    const albums = await ArtistService.getListDiscographyHave(id);
 
     res
       .status(200)
@@ -95,14 +96,13 @@ const getListPopularArtistDetail = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const albums = await artistService.getListPopularArtistDetail(id);
-
+    const albums = await ArtistService.getListPopularArtistDetail(id);
     res
       .status(200)
       .json(
         helperFunc.successResponse(
           true,
-          "Get list popular artist detail",
+                   "Get list popular artist detail",
           albums
         )
       );
@@ -115,7 +115,7 @@ const getListFansAlsoLike = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const albums = await artistService.getListFansAlsoLike(id);
+    const albums = await ArtistService.getListFansAlsoLike(id);
 
     res
       .status(200)
@@ -136,7 +136,7 @@ const getAlbumArtistDetail = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const albums = await artistService.getAlbumArtistDetail(id);
+    const albums = await ArtistService.getAlbumArtistDetail(id);
 
     res
       .status(200)
@@ -154,7 +154,7 @@ const getAlbumArtistDetail = async (req, res) => {
 
 const getTopArtist = async (req, res) => {
   try {
-    const artists = await artistService.getTopArtist();
+    const artists = await ArtistService.getTopArtist();
 
     res
       .status(200)
@@ -163,6 +163,23 @@ const getTopArtist = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+const getPopularArtists = asyncHandler(async (req, res) => {
+  try {
+    const artists = await ArtistService.getPopularArtists(req.query);
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(
+          true,
+          "Popular artists query successful",
+          artists
+        )
+      );
+  } catch (error) {
+    res.status(404).json(helperFunc.errorResponse(false, error.message));
+  }
+});
 
 export default {
   getListArtists,
@@ -175,4 +192,8 @@ export default {
   getListFansAlsoLike,
   getAlbumArtistDetail,
   getTopArtist,
-};
+  getPopularArtists,
+}
+
+
+

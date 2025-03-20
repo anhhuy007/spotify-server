@@ -11,5 +11,6 @@ router.delete('/logout', authenticateToken, authController.logout);
 router.post('/forgot-password', authController.sendOTP);
 router.post('/verify-otp', authController.verifyOTP);
 router.post('/reset-password', authController.resetPassword);
+router.get('/check-username', authController.checkUsernameExists);
 
 export default router;

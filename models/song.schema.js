@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const songSchema = new Schema(
@@ -7,19 +7,7 @@ const songSchema = new Schema(
       type: String,
       required: true,
     },
-    singer_ids: {
-      type: [Schema.Types.ObjectId],
-      required: true,
-    },
-    author_ids: {
-      type: [Schema.Types.ObjectId],
-      required: true,
-    },
-    genre_ids: {
-      type: [Schema.Types.ObjectId],
-      required: true,
-    },
-    lyric: {
+    lyrics: {
       type: String,
       required: true,
     },
@@ -39,6 +27,28 @@ const songSchema = new Schema(
       type: String,
       required: true,
     },
+
+    singer_ids: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Artist",
+        required: true,
+      },
+    ],
+    author_ids: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Artist",
+        required: true,
+      },
+    ],
+    genre_ids: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Genre",
+        required: true,
+      },
+    ],
   },
   {
     versionKey: false,
@@ -47,7 +57,7 @@ const songSchema = new Schema(
   }
 );
 
-songSchema.set('strict', true);
+songSchema.set("strict", true);
 
-const Song = mongoose.model('Song', songSchema);
+const Song = mongoose.model("Song", songSchema);
 export default Song;

@@ -5,11 +5,17 @@ import helperFunc from "../utils/helperFunc.js";
 const signup = asyncHandler(async (req, res) => {
   try {
     const user = await authService.signup(req.body);
+    console.log("Signup - User created: ", user);
     res
       .status(201)
       .json(helperFunc.successResponse(true, "User created", user));
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Signup error: ", error);
+    res
+      .status(400)
+      .json(
+        helperFunc.errorResponse(false, "Failed to signup: " + error.message)
+      );
   }
 });
 
@@ -20,7 +26,10 @@ const login = asyncHandler(async (req, res) => {
       .status(200)
       .json(helperFunc.successResponse(true, "User logged in", user));
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Login error: ", error);
+    res
+      .status(401)
+      .json(helperFunc.errorResponse(false, "Login failed: " + error.message));
   }
 });
 
@@ -32,7 +41,8 @@ const logout = asyncHandler(async (req, res) => {
       .status(200)
       .json(helperFunc.successResponse(true, "User logged out", {}));
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Logout error: ", error);
+    res.status(400).json(helperFunc.errorResponse(false, "Failed to logout"));
   }
 });
 
@@ -47,7 +57,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       })
     );
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Refresh access token error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to refresh access token"));
   }
 });
 
@@ -58,7 +71,10 @@ const loginWithGoogle = asyncHandler(async (req, res) => {
       .status(200)
       .json(helperFunc.successResponse(true, "User logged in", response));
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Login with Google error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to login with Google"));
   }
 });
 
@@ -69,7 +85,12 @@ const sendOTP = asyncHandler(async (req, res) => {
       .status(200)
       .json(helperFunc.successResponse(true, "OTP sent to email", {}));
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Send OTP error: ", error);
+    res
+      .status(400)
+      .json(
+        helperFunc.errorResponse(false, "Failed to send OTP: " + error.message)
+      );
   }
 });
 
@@ -78,18 +99,41 @@ const verifyOTP = asyncHandler(async (req, res) => {
     await authService.verifyOTP(req.body);
     res.status(200).json(helperFunc.successResponse(true, "OTP verified", {}));
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Verify OTP error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to verify OTP"));
   }
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
+  console.log("Reset password: ", req.body);
+
   try {
-    await authService.resetPassword(req.body.email, req.body.password);
+    await authService.resetPassword(req.body);
+
     res
       .status(200)
       .json(helperFunc.successResponse(true, "Password reset successful", {}));
   } catch (error) {
-    res.status(400).json(helperFunc.errorResponse(false, error.message));
+    console.log("Reset password error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to reset password"));
+  }
+});
+
+const checkUsernameExists = asyncHandler(async (req, res) => {
+  try {
+    const existed = await authService.checkUsernameExists(req.query.username);
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Username exists", { existed }));
+  } catch (error) {
+    console.log("Check username error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to check username"));
   }
 });
 
@@ -102,4 +146,5 @@ export default {
   sendOTP,
   verifyOTP,
   resetPassword,
+  checkUsernameExists,
 };

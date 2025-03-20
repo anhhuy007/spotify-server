@@ -1,28 +1,31 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-const artistSchema = new Schema({
+const artistSchema = new Schema(
+  {
     name: {
-        type: String, 
-        require: true
-    }, 
+      type: String,
+      require: true,
+    },
     bio: {
-        type: String, 
-        default: ""
-    }, 
+      type: String,
+      default: "",
+    },
     avatar_url: {
-        type: String, 
-        default: ""
+      type: String,
+      default: "",
     },
     followers: {
-        type: Number, 
-        default: 0
+      type: Number,
+      default: 0,
     },
-}, {
-    versionKey: false, 
-    timestamps: true, 
-    collection: "Artist"
-});
+  },
+  {
+    versionKey: false,
+    timestamps: true,
+    collection: "Artist",
+  }
+);
 
 artistSchema.set("strict", true);
 
