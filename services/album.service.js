@@ -242,8 +242,6 @@ class AlbumService {
   async getAlbumsByArtistNames(options = {}) {
     try {
       let { artistNames, page = 1, limit = 10 } = options;
-
-      console.log("Server received artist names:", artistNames, page, limit);
       // Chuyển đổi thành số nguyên, tránh NaN
       const pageNum = Math.max(parseInt(page, 10) || 1, 1);
       const limitNum = Math.max(parseInt(limit, 10) || 10, 1);
@@ -265,7 +263,6 @@ class AlbumService {
           .limit(limitNum);
       } else {
         // Nếu không có album nào, chọn ngẫu nhiên 3 album
-        console.log("No albums found, fetching random albums...");
         albums = await Album.aggregate([{ $sample: { size: 3 } }]);
         totalAlbums = albums.length;
       }
@@ -274,7 +271,6 @@ class AlbumService {
         artist: artist_ids,
       }));
 
-      console.log("Formatted albums artist:", formattedAlbums);
 
       return {
         total: totalAlbums,
