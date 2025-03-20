@@ -35,10 +35,7 @@ class AlbumService {
 
     const transformedAlbums = albums.map((album) => ({
       ...album,
-      artist: album.artist_ids.map((artist) => artist.name),
       artist_url: album.artist_ids.map((artist) => artist.avatar_url),
-      // remove artist_ids
-      artist_ids: undefined,
     }));
 
     return {
@@ -46,8 +43,8 @@ class AlbumService {
       page,
       limit,
       totalPages,
-      items: this.cleanedAlbumData(albums),
-      // items: transformedAlbums,
+      // items: this.cleanedAlbumData(albums),
+      items: this.cleanedAlbumData(transformedAlbums), 
     };
   }
 
@@ -66,16 +63,21 @@ class AlbumService {
       .populate({
         path: "artist_ids",
         model: "Artist",
-        select: "name",
+        select: "name avatar_url",
       })
       .lean();
+    const transformedAlbums = albums.map((album) => ({
+        ...album,
+        artist_url: album.artist_ids.map((artist) => artist.avatar_url),
+    }));
+  
 
     return {
       total,
       page,
       limit,
       totalPages,
-      items: this.cleanedAlbumData(albums),
+      items: this.cleanedAlbumData(transformedAlbums),
     };
   }
 
