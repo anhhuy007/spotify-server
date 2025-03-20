@@ -7,7 +7,7 @@ const songSchema = new Schema(
       type: String,
       required: true,
     },
-    lyric: {
+    lyrics: {
       type: String,
       required: true,
     },

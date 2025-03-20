@@ -12,8 +12,11 @@ class AlbumService {
   }
 
   async getPopularAlbums(options = {}) {
-    const { page=1, limit=20, filter={} } = // default: 20 items per page, filter=null
-      helperFunc.validatePaginationOptions(options); // help server validate invalid input
+    const {
+      page = 1,
+      limit = 20,
+      filter = {},
+    } = helperFunc.validatePaginationOptions(options); // default: 20 items per page, filter=null // help server validate invalid input
     const skip = (page - 1) * limit;
     const total = await Album.countDocuments(filter);
     const totalPages = Math.ceil(total / limit);
@@ -30,21 +33,21 @@ class AlbumService {
       })
       .lean();
 
-    const transformedAlbums=albums.map(album => ({
+    const transformedAlbums = albums.map((album) => ({
       ...album,
-      artist: album.artist_ids.map(artist => artist.name),
-      artist_url: album.artist_ids.map(artist => artist.avatar_url),
+      artist: album.artist_ids.map((artist) => artist.name),
+      artist_url: album.artist_ids.map((artist) => artist.avatar_url),
       // remove artist_ids
-      artist_ids: undefined,}));
-    
+      artist_ids: undefined,
+    }));
 
     return {
       total,
       page,
       limit,
       totalPages,
-      // items: this.cleanedAlbumData(albums),
-      items: transformedAlbums,
+      items: this.cleanedAlbumData(albums),
+      // items: transformedAlbums,
     };
   }
 
@@ -189,104 +192,102 @@ class AlbumService {
 
     return this.cleanedAlbumData([album])[0];
   }
-  
 
   async getAlbumSongs(albumId, options = {}) {
     try {
-        // Lấy giá trị page & limit từ options
-        const { page = 1, limit = 10 } = options;
+      // Lấy giá trị page & limit từ options
+      const { page = 1, limit = 10 } = options;
 
-        // Chuyển đổi page & limit sang số nguyên
-        const pageNum = parseInt(page);
-        const limitNum = parseInt(limit);
+      // Chuyển đổi page & limit sang số nguyên
+      const pageNum = parseInt(page);
+      const limitNum = parseInt(limit);
 
-        // Tìm album theo ID
-        const album = await Album.findById(albumId);
-        if (!album) {
-            return { success: false, message: "Album not found", status: 404 };
-        }
+      // Tìm album theo ID
+      const album = await Album.findById(albumId);
+      if (!album) {
+        return { success: false, message: "Album not found", status: 404 };
+      }
 
-        // Tính toán pagination
-        const totalSongs = album.song_ids.length;
-        const totalPages = Math.ceil(totalSongs / limitNum);
-        const startIndex = (pageNum - 1) * limitNum;
-        const songIdsToFetch = album.song_ids.slice(startIndex, startIndex + limitNum);
+      // Tính toán pagination
+      const totalSongs = album.song_ids.length;
+      const totalPages = Math.ceil(totalSongs / limitNum);
+      const startIndex = (pageNum - 1) * limitNum;
+      const songIdsToFetch = album.song_ids.slice(
+        startIndex,
+        startIndex + limitNum
+      );
 
-        // Lấy danh sách bài hát
-        const songs = await Song.find({ _id: { $in: songIdsToFetch } });
-        
+      // Lấy danh sách bài hát
+      const songs = await Song.find({ _id: { $in: songIdsToFetch } });
 
-        const formattedSongs = songs.map(song => ({
+      const formattedSongs = songs
+        .map((song) => ({
           ...song.toObject(),
           singers: song.singer_ids, // Đổi tên `singer_ids` thành `artist`
-        })).map(({ singer_ids, author_ids, ...song }) => song); // Xóa `singer_ids` và `author_ids`
+        }))
+        .map(({ singer_ids, author_ids, ...song }) => song); // Xóa `singer_ids` và `author_ids`
 
-
-        return {
-          total: totalSongs,
-          limit: limitNum,
-          page: pageNum,
-          totalPages,
-          items: formattedSongs,
-        };
+      return {
+        total: totalSongs,
+        limit: limitNum,
+        page: pageNum,
+        totalPages,
+        items: formattedSongs,
+      };
     } catch (err) {
-        console.error("Error fetching songs:", err);
-        return { success: false, message: "Server error", status: 500 };
+      console.error("Error fetching songs:", err);
+      return { success: false, message: "Server error", status: 500 };
     }
   }
   async getAlbumsByArtistNames(options = {}) {
     try {
-        let { artistNames, page = 1, limit = 10 } = options;
+      let { artistNames, page = 1, limit = 10 } = options;
 
-        console.log("Server received artist names:", artistNames, page, limit);
-        // Chuyển đổi thành số nguyên, tránh NaN
-        const pageNum = Math.max(parseInt(page, 10) || 1, 1);
-        const limitNum = Math.max(parseInt(limit, 10) || 10, 1);
+      console.log("Server received artist names:", artistNames, page, limit);
+      // Chuyển đổi thành số nguyên, tránh NaN
+      const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+      const limitNum = Math.max(parseInt(limit, 10) || 10, 1);
 
-        // Đảm bảo artistNames là mảng
-        if (!Array.isArray(artistNames)) {
-            artistNames = [artistNames];
-        }
+      // Đảm bảo artistNames là mảng
+      if (!Array.isArray(artistNames)) {
+        artistNames = [artistNames];
+      }
 
-        // Đếm số album có nghệ sĩ thuộc danh sách
-        let totalAlbums = await Album.countDocuments({ artist_names: { $in: artistNames } });
+      // Đếm số album có nghệ sĩ thuộc danh sách
+      let totalAlbums = await Album.countDocuments({
+        artist_names: { $in: artistNames },
+      });
 
-        let albums = [];
-        if (totalAlbums > 0) {
-            albums = await Album.find({ artist_names: { $in: artistNames } })
-                .skip((pageNum - 1) * limitNum)
-                .limit(limitNum);
-        } else {
-            // Nếu không có album nào, chọn ngẫu nhiên 3 album
-            console.log("No albums found, fetching random albums...");
-            albums = await Album.aggregate([{ $sample: { size: 3 } }]);
-            totalAlbums = albums.length;
-        }
-        const formattedAlbums = albums.map(({ artist_ids, ...album }) => ({
-          ...album,
-          artist: artist_ids
-        }));
-            
-        console.log("Formatted albums artist:", formattedAlbums);
+      let albums = [];
+      if (totalAlbums > 0) {
+        albums = await Album.find({ artist_names: { $in: artistNames } })
+          .skip((pageNum - 1) * limitNum)
+          .limit(limitNum);
+      } else {
+        // Nếu không có album nào, chọn ngẫu nhiên 3 album
+        console.log("No albums found, fetching random albums...");
+        albums = await Album.aggregate([{ $sample: { size: 3 } }]);
+        totalAlbums = albums.length;
+      }
+      const formattedAlbums = albums.map(({ artist_ids, ...album }) => ({
+        ...album,
+        artist: artist_ids,
+      }));
 
-        return {
-          total: totalAlbums,
-          limit: limitNum,
-          page: pageNum,
-          totalPages: totalAlbums > 0 ? Math.ceil(totalAlbums / limitNum) : 1,
-          items: formattedAlbums,
-        };
+      console.log("Formatted albums artist:", formattedAlbums);
 
+      return {
+        total: totalAlbums,
+        limit: limitNum,
+        page: pageNum,
+        totalPages: totalAlbums > 0 ? Math.ceil(totalAlbums / limitNum) : 1,
+        items: formattedAlbums,
+      };
     } catch (err) {
-        console.error("Error fetching albums by artist names:", err);
-        return { success: false, message: "Server error", status: 500 };
+      console.error("Error fetching albums by artist names:", err);
+      return { success: false, message: "Server error", status: 500 };
     }
+  }
 }
-
-}
-
-
-
-
 
 export default new AlbumService();

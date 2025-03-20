@@ -61,13 +61,14 @@ const getAlbumById = asyncHandler(async (req, res) => {
 });
 
 const getAlbumSongs = asyncHandler(async (req, res) => {
-  try{
+  try {
     const response = await AlbumService.getAlbumSongs(req.params.id, req.query);
     res
       .status(200)
-      .json(helperFunc.successResponse(true, "All album songs retrieve", response));
-  }
-  catch(error){
+      .json(
+        helperFunc.successResponse(true, "All album songs retrieve", response)
+      );
+  } catch (error) {
     console.log("Get all albums error: ", error);
     res
       .status(400)
@@ -76,16 +77,17 @@ const getAlbumSongs = asyncHandler(async (req, res) => {
 });
 
 const getAlbumsByArtistNames = asyncHandler(async (req, res) => {
-  try{
+  try {
     console.log(req.query);
 
     const response = await AlbumService.getAlbumsByArtistNames(req.query);
 
     res
       .status(200)
-      .json(helperFunc.successResponse(true, "All album songs retrieve", response));
-  }
-  catch(error){
+      .json(
+        helperFunc.successResponse(true, "All album songs retrieve", response)
+      );
+  } catch (error) {
     console.log("Get all albums error: ", error);
     res
       .status(400)

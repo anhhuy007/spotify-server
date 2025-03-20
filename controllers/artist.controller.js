@@ -5,7 +5,6 @@ import ArtistService from "../services/artist.service.js";
 const getPopularArtists = asyncHandler(async (req, res) => {
   try {
     const artists = await ArtistService.getPopularArtists(req.query);
-    console.log("call get popular artists");
     res
       .status(200)
       .json(
