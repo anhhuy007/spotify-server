@@ -195,20 +195,15 @@ class AlbumService {
 
   async getAlbumSongs(albumId, options = {}) {
     try {
-      // Lấy giá trị page & limit từ options
       const { page = 1, limit = 10 } = options;
-
-      // Chuyển đổi page & limit sang số nguyên
       const pageNum = parseInt(page);
       const limitNum = parseInt(limit);
 
-      // Tìm album theo ID
       const album = await Album.findById(albumId);
       if (!album) {
         return { success: false, message: "Album not found", status: 404 };
       }
 
-      // Tính toán pagination
       const totalSongs = album.song_ids.length;
       const totalPages = Math.ceil(totalSongs / limitNum);
       const startIndex = (pageNum - 1) * limitNum;
@@ -217,28 +212,70 @@ class AlbumService {
         startIndex + limitNum
       );
 
-      // Lấy danh sách bài hát
-      const songs = await Song.find({ _id: { $in: songIdsToFetch } });
+      let songs = await Song.find({ _id: { $in: songIdsToFetch } })
+        .populate({
+          path: "singer_ids",
+          select: "name bio avatar_url followers",
+        })
+        .populate({
+          path: "author_ids",
+          select: "name bio avatar_url followers",
+        })
+        .populate({
+          path: "genre_ids",
+          select: "name description image_url createdAt",
+        });
 
-      const formattedSongs = songs
-        .map((song) => ({
-          ...song.toObject(),
-          singers: song.singer_ids, // Đổi tên `singer_ids` thành `artist`
-        }))
-        .map(({ singer_ids, author_ids, ...song }) => song); // Xóa `singer_ids` và `author_ids`
+      const transformedSongs = songs.map((song) =>
+        this.transformSongData(song)
+      );
 
       return {
         total: totalSongs,
         limit: limitNum,
         page: pageNum,
         totalPages,
-        items: formattedSongs,
+        items: transformedSongs,
       };
     } catch (err) {
       console.error("Error fetching songs:", err);
       return { success: false, message: "Server error", status: 500 };
     }
   }
+
+  transformSongData(song) {
+    return {
+      _id: song._id.toString(),
+      title: song.title,
+      lyric: song.lyrics,
+      is_premium: song.is_premium,
+      like_count: song.like_count,
+      mp3_url: song.mp3_url,
+      image_url: song.image_url,
+      singers: song.singer_ids.map((singer) => ({
+        _id: singer._id.toString(),
+        name: singer.name,
+        bio: singer.bio || "",
+        avatar_url: singer.avatar_url || singer.image_url,
+        followers: singer.followers || 0,
+      })),
+      authors: song.author_ids.map((author) => ({
+        _id: author._id.toString(),
+        name: author.name,
+        bio: author.bio || "",
+        avatar_url: author.avatar_url || author.image_url,
+        followers: author.followers || 0,
+      })),
+      genres: song.genre_ids.map((genre) => ({
+        _id: genre._id.toString(),
+        name: genre.name,
+        description: genre.description || "",
+        image_url: genre.image_url || "",
+        create_at: genre.createdAt || new Date(),
+      })),
+    };
+  }
+
   async getAlbumsByArtistNames(options = {}) {
     try {
       let { artistNames, page = 1, limit = 10 } = options;
