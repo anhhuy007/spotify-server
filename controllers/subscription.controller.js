@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 import helperFunc from "../utils/helperFunc.js";
 
 const createSubscription = asyncHandler(async (req, res) => {
-  const { userId, startDate, endDate, subscriptionType } = req.body;
+  const { userId, subscriptionType, startDate, endDate } = req.body;
 
   try {
     const subscription = await subscriptionService.createSubscription(
