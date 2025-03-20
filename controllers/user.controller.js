@@ -95,9 +95,43 @@ const uploadAvatar = asyncHandler(async (req, res) => {
   }
 });
 
+const changeTheme = asyncHandler(async (req, res) => {
+  try {
+    const user = await userService.changeTheme(req.user._id, req.body.theme);
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(true, "Theme updated successfully", user)
+      );
+  } catch (error) {
+    console.log("Change theme error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to update theme"));
+  }
+});
+
+const changeLanguage = asyncHandler(async (req, res) => {
+  try {
+    const user = await userService.changeLanguage(req.user._id, req.body.language);
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(true, "Language updated successfully", user)
+      );
+  } catch (error) {
+    console.log("Change language error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to update language"));
+  }
+});
+
 export default {
   getUserProfile,
   updateUserProfile,
   changePassword,
   uploadAvatar,
+  changeTheme,
+  changeLanguage,
 };

@@ -13,13 +13,11 @@ router.get("/profile/hello", async (req, res) => {
     .status(200)
     .json(helperFunc.successResponse(true, "Hello from user route", {}));
 });
-router.get("/profile/:userId", userController.getUserProfile);
-router.put("/profile", userController.updateUserProfile);
 router.put("/profile/change-password", userController.changePassword);
-router.post(
-  "/profile/upload-avatar",
-  upload.single("image"),
-  userController.uploadAvatar
-);
+router.post("/profile/upload-avatar", upload.single("image"), userController.uploadAvatar);
+router.post("/profile/change-language", authMiddleware, userController.changeLanguage);
+router.post("/profile/change-theme", authMiddleware, userController.changeTheme);
+// router.get("/profile/:userId", userController.getUserProfile);
+// router.put("/profile", userController.updateUserProfile);
 
 export default router;
