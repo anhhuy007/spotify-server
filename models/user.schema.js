@@ -31,10 +31,6 @@ const userSchema = new Schema(
       type: String,
       default: "default.image",
     },
-    premium: {
-      type: Boolean,
-      default: false,
-    },
     language: {
       type: String,
       default: "en",

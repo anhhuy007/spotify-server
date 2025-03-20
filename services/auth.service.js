@@ -15,7 +15,7 @@ class AuthService {
       {
         id: user._id,
         email: user.email,
-        username: user.username
+        username: user.username,
       },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
@@ -52,7 +52,8 @@ class AuthService {
 
     if (!avatarUrl) {
       // default avatar
-      avatarUrl = "https://i.pinimg.com/1200x/d7/fa/93/d7fa938f70599a3213088646e35eb690.jpg";
+      avatarUrl =
+        "https://i.pinimg.com/1200x/d7/fa/93/d7fa938f70599a3213088646e35eb690.jpg";
     }
 
     // convert birthday to date
@@ -246,7 +247,8 @@ class AuthService {
       otp,
       verified: true,
     });
-    if (!existingOTP) throw new Error("Invalid or expired OTP. Please try again.");
+    if (!existingOTP)
+      throw new Error("Invalid or expired OTP. Please try again.");
 
     if (existingOTP.expiry < new Date()) {
       await OTP.deleteOne({ email, otp });
@@ -271,6 +273,13 @@ class AuthService {
     if (!username) throw new Error("Missing username");
 
     const user = await User.findOne({ username });
+    return !!user;
+  }
+
+  async checkEmailExists(email) {
+    if (!email) throw new Error("Missing email");
+
+    const user = await User.findOne({ email });
     return !!user;
   }
 }

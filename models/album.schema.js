@@ -15,6 +15,10 @@ const albumSchema = new Schema(
       type: Number,
       default: 0,
     },
+    play_count: {
+      type: Number,
+      default: 0
+    },
     cover_url: {
       type: String,
       default: "",

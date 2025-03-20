@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/user.schema.js";
 import Album from "../models/album.schema.js";
+import Song from "../models/song.schema.js";
 import Artist from "../models/artist.schema.js";
 
 const databaseName = "spotify-clone";
@@ -73,19 +74,18 @@ async function updateUserSchema() {
   }
 }
 
-async function updateAlbumData() {
+async function updateAlbumSchema() {
   try {
     const albums = await Album.find();
     for (const album of albums) {
-      const songIds = album.song_ids.map((id) => id.toString());
-      const compressedIds = [...new Set(songIds)];
+      if (album.like_count && album.like_count !== 0) {
+        continue;
+      }
 
-      const objIds = compressedIds.map((id) => new mongoose.Types.ObjectId(id));
-      album.song_ids = objIds;
+      // generate random play count between 0 and 1000
+      const playCount = Math.floor(Math.random() * 1001);
+      album.like_count = playCount;
       await album.save();
-
-      console.log("Album:", album.title);
-      console.log("compressedIds:", compressedIds);
     }
 
     console.log("✅ Album data updated successfully");
@@ -117,11 +117,33 @@ async function updateAlbumReleaseDate() {
   }
 }
 
+async function updateSongSchema() {
+  try {
+    const songs = await Song.find();
+    console.log(`Found ${songs.length} songs to update`);
+    for (const song of songs) {
+      if (song.like_count && song.like_count !== 0) {
+        continue;
+      }
+      
+      // generate random like count between 0 and 100
+      const likeCount = Math.floor(Math.random() * 101);
+      song.like_count = likeCount;
+      await song.save(); 
+    }
+
+    console.log("✅ Song schema updated");
+  } catch(error) {
+    console.error("❌ Song schema update error:", error);
+  }
+}
+
 async function uploadData() {
   // await uploadUsers();
-  // await updateAlbumData();
+  // await updateAlbumSchema();
   // await updateAlbumReleaseDate();
   // await updateUserSchema();
+  // updateSongSchema();
 }
 
 export { connectDB, disconnectDB, uploadData };

@@ -7,7 +7,7 @@ const songSchema = new Schema(
       type: String,
       required: true,
     },
-    lyric: {
+    lyrics: {
       type: String,
       required: true,
     },
@@ -16,6 +16,10 @@ const songSchema = new Schema(
       default: false,
     },
     like_count: {
+      type: Number,
+      default: 0,
+    },
+    play_count: {
       type: Number,
       default: 0,
     },
