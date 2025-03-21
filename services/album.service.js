@@ -13,7 +13,18 @@ class AlbumService {
   }
   getTopAlbum = async () => {
     try {
-      return await Album.find({}, "_id title cover_url like_count ");
+      return await Album.find({}, "_id title cover_url play_count")
+        .sort({ play_count: -1 }) // Sắp xếp giảm dần theo play_count
+        .limit(10); // Giới hạn 10 album
+    } catch (error) {
+      throw new Error("Get top album failed");
+    }
+  };
+  getMostAlbum = async () => {
+    try {
+      return await Album.findOne({}, "_id title cover_url play_count").sort({
+        play_count: -1,
+      }); // Sắp xếp giảm dần theo play_count
     } catch (error) {
       throw new Error("Get top album failed");
     }
@@ -75,7 +86,7 @@ class AlbumService {
       limit,
       totalPages,
       // items: this.cleanedAlbumData(albums),
-      items: this.cleanedAlbumData(transformedAlbums), 
+      items: this.cleanedAlbumData(transformedAlbums),
     };
   }
 
@@ -98,10 +109,9 @@ class AlbumService {
       })
       .lean();
     const transformedAlbums = albums.map((album) => ({
-        ...album,
-        artist_url: album.artist_ids.map((artist) => artist.avatar_url),
+      ...album,
+      artist_url: album.artist_ids.map((artist) => artist.avatar_url),
     }));
-  
 
     return {
       total,
@@ -340,7 +350,6 @@ class AlbumService {
         ...album,
         artist: artist_ids,
       }));
-
 
       return {
         total: totalAlbums,

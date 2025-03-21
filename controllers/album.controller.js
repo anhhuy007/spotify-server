@@ -14,6 +14,18 @@ const getTopAlbum = async (req, res) => {
   }
 };
 
+const getMostAlbum = async (req, res) => {
+  try {
+    const artists = await AlbumService.getMostAlbum();
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Top album", artists));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getAlsoLike = async (req, res) => {
   try {
     const artists = await AlbumService.getAlsoLike();
@@ -129,4 +141,5 @@ export default {
   getAlbumById,
   getAlbumSongs,
   getAlbumsByArtistNames,
+  getMostAlbum,
 };

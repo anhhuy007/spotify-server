@@ -5,6 +5,7 @@ import authenticateToken from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.get("/topAlbum", albumController.getTopAlbum);
+router.get("/mostAlbum", albumController.getMostAlbum);
 router.get("/alsoLike", albumController.getAlsoLike);
 router.get("/popular", albumController.getPopularAlbums);
 router.get("/new", albumController.getNewAlbums);
