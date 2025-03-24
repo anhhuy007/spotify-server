@@ -17,7 +17,8 @@ router.put("/profile/change-password", userController.changePassword);
 router.post("/profile/upload-avatar", upload.single("image"), userController.uploadAvatar);
 router.post("/profile/change-language", authMiddleware, userController.changeLanguage);
 router.post("/profile/change-theme", authMiddleware, userController.changeTheme);
-// router.get("/profile/:userId", userController.getUserProfile);
-// router.put("/profile", userController.updateUserProfile);
+router.get("/profile/:userId", userController.getUserProfile);
+router.put("/profile", userController.updateUserProfile);
+router.post("/add-fcm-token", authMiddleware, userController.addFCMToken);
 
 export default router;

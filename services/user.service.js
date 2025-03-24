@@ -10,11 +10,7 @@ class ProfileService {
       username: user.username,
       avatar_url: user.avatar_url,
       language: user.language,
-      theme: user.theme,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      googleId: user.googleId,
-      dob: user.dob,
+      theme: user.theme
     };
   }
 
@@ -133,6 +129,19 @@ class ProfileService {
     const updated = await User.findByIdAndUpdate(
       userId,
       { language },
+      { new: true }
+    );
+
+    return this.cleanUserData(updated);
+  }
+
+  async addFCMToken(userId, fcmToken) {
+    if (!userId) throw new Error("Invalid user id");
+    if (!fcmToken) throw new Error("Invalid FCM token");
+
+    const updated = await User.findByIdAndUpdate(
+      userId,
+      { fcm_token: fcmToken },
       { new: true }
     );
 
