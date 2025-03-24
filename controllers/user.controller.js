@@ -127,11 +127,29 @@ const changeLanguage = asyncHandler(async (req, res) => {
   }
 });
 
-export default {
+const addFCMToken = asyncHandler(async (req, res) => {
+  console.log("Add FCM token request body: ", req.body);
+  try {
+    const user = await userService.addFCMToken(req.user._id, req.body.fcmToken);
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(true, "FCM token added successfully", user)
+      );
+  } catch (error) {
+    console.log("Add FCM token error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to add FCM token"));
+  }
+});
+
+export default {  
   getUserProfile,
   updateUserProfile,
   changePassword,
   uploadAvatar,
   changeTheme,
   changeLanguage,
+  addFCMToken
 };
