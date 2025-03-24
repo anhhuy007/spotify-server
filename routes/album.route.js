@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/topAlbum", albumController.getTopAlbum);
 router.get("/alsoLike", albumController.getAlsoLike);
-router.get("/popular", albumController.getPopularAlbums);
+router.get("/popular", authenticateToken, albumController.getPopularAlbums);
 router.get("/new", albumController.getNewAlbums);
 router.get("/byArtists", albumController.getAlbumsByArtistNames);
 router.get("/:id", albumController.getAlbumById);

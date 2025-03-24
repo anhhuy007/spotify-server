@@ -7,6 +7,7 @@ import genreRoutes from "./genre.route.js";
 import artistRoutes from "./artist.route.js";
 import subscriptionRoutes from "./subscription.route.js";
 import songRoutes from "./song.route.js";
+import notificationRoutes from "./notification.route.js";
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.use("/genre", genreRoutes);
 router.use("/artist", artistRoutes);
 router.use("/song", songRoutes);
 router.use("/subscription", subscriptionRoutes);  
+router.use("/notification", notificationRoutes);
 
 router.get("/", (req, res) => {
   res.send("Hello from Spotify Clone!");
