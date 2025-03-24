@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.schema.js";
 
-async function authenticateToken(req, res, next) {
+async function authenticateUser(req, res, next) {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
@@ -35,4 +35,15 @@ async function authenticateToken(req, res, next) {
   }
 }
 
-export default authenticateToken;
+async function authorizeRoles(role) {
+  return (req, res, next) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    if (!role.includes(req.user.role)) {
+      return res.status(403).json({ message: `Forbidden: Requires ${role} role` }); 
+    }
+
+    next();
+  }
+}
+
+export default { authenticateUser, authorizeRoles };
