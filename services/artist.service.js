@@ -136,6 +136,83 @@ class ArtistService {
       throw new Error("Get top artist failed");
     }
   };
+
+  async getArtistSongs(artistId, options = {}) {
+    try {
+      const { page = 1, limit = 10 } = options;
+      const pageNum = parseInt(page, 10);
+      const limitNum = parseInt(limit, 10);
+
+      const totalSongs = await Song.countDocuments({ singer_ids: artistId });
+      const totalPages = Math.ceil(totalSongs / limitNum);
+      const startIndex = (pageNum - 1) * limitNum;
+
+      let songs = await Song.find({ singer_ids: artistId })
+        .skip(startIndex)
+        .limit(limitNum)
+        .populate({
+          path: "singer_ids",
+          select: "name bio avatar_url followers",
+        })
+        .populate({
+          path: "author_ids",
+          select: "name bio avatar_url followers",
+        })
+        .populate({
+          path: "genre_ids",
+          select: "name description image_url createdAt",
+        });
+
+      const transformedSongs = songs.map((song) =>
+        this.transformSongData(song)
+      );
+
+      return {
+        success: true,
+        total: totalSongs,
+        limit: limitNum,
+        page: pageNum,
+        totalPages,
+        items: transformedSongs,
+      };
+    } catch (err) {
+      console.error("Error fetching artist songs:", err);
+      return { success: false, message: "Server error", status: 500 };
+    }
+  }
+
+  transformSongData(song) {
+    return {
+      _id: song._id.toString(),
+      title: song.title,
+      lyric: song.lyrics,
+      is_premium: song.is_premium,
+      like_count: song.like_count,
+      mp3_url: song.mp3_url,
+      image_url: song.image_url,
+      singers: song.singer_ids.map((singer) => ({
+        _id: singer._id.toString(),
+        name: singer.name,
+        bio: singer.bio || "",
+        avatar_url: singer.avatar_url || singer.image_url,
+        followers: singer.followers || 0,
+      })),
+      authors: song.author_ids.map((author) => ({
+        _id: author._id.toString(),
+        name: author.name,
+        bio: author.bio || "",
+        avatar_url: author.avatar_url || author.image_url,
+        followers: author.followers || 0,
+      })),
+      genres: song.genre_ids.map((genre) => ({
+        _id: genre._id.toString(),
+        name: genre.name,
+        description: genre.description || "",
+        image_url: genre.image_url || "",
+        create_at: genre.createdAt || new Date(),
+      })),
+    };
+  }
 }
 
 export default new ArtistService();

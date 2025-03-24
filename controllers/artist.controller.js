@@ -43,7 +43,9 @@ const getListDiscographyAlbum = async (req, res) => {
     console.log(albums);
     res
       .status(200)
-      .json(helperFunc.successResponse(true, "List albums discography", albums));
+      .json(
+        helperFunc.successResponse(true, "List albums discography", albums)
+      );
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -72,7 +74,9 @@ const getListDiscographyCollection = async (req, res) => {
 
     res
       .status(200)
-      .json(helperFunc.successResponse(true, "List collection discography", albums));
+      .json(
+        helperFunc.successResponse(true, "List collection discography", albums)
+      );
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -102,7 +106,7 @@ const getListPopularArtistDetail = async (req, res) => {
       .json(
         helperFunc.successResponse(
           true,
-                   "Get list popular artist detail",
+          "Get list popular artist detail",
           albums
         )
       );
@@ -131,7 +135,6 @@ const getListFansAlsoLike = async (req, res) => {
   }
 };
 
-
 const getAlbumArtistDetail = async (req, res) => {
   try {
     const { id } = req.params;
@@ -141,11 +144,7 @@ const getAlbumArtistDetail = async (req, res) => {
     res
       .status(200)
       .json(
-        helperFunc.successResponse(
-          true,
-          "Get album artist detail",
-          albums
-        )
+        helperFunc.successResponse(true, "Get album artist detail", albums)
       );
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -181,6 +180,27 @@ const getPopularArtists = asyncHandler(async (req, res) => {
   }
 });
 
+const getArtistSongs = asyncHandler(async (req, res) => {
+  try {
+    const response = await ArtistService.getArtistSongs(
+      req.params.id,
+      req.query
+    );
+    console.log("Get artitst songs: ", response);
+
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(true, "All album songs retrieve", response)
+      );
+  } catch (error) {
+    console.log("Get all albums error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to get album songs"));
+  }
+});
+
 export default {
   getListArtists,
   getArtist,
@@ -193,7 +213,5 @@ export default {
   getAlbumArtistDetail,
   getTopArtist,
   getPopularArtists,
-}
-
-
-
+  getArtistSongs,
+};
