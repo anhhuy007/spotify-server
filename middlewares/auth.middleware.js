@@ -35,7 +35,7 @@ async function authenticateUser(req, res, next) {
   }
 }
 
-async function authorizeRoles(role) {
+function authorizeRoles(...role) {
   return (req, res, next) => {
     if (!req.user) return res.status(401).json({ message: "Unauthorized" });
     if (!role.includes(req.user.role)) {

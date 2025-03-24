@@ -10,11 +10,6 @@ const router = express.Router();
 router.use(authMiddleware.authenticateUser);
 
 // Protected routes
-router.get("/profile/hello", async (req, res) => {
-  res
-    .status(200)
-    .json(helperFunc.successResponse(true, "Hello from user route", {}));
-});
 router.put("/profile/change-password", userController.changePassword);
 router.post(
   "/profile/upload-avatar",
