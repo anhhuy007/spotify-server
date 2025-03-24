@@ -4,11 +4,13 @@ const Schema = mongoose.Schema;
 const followerSchema = new Schema(
   {
     user_id: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "User",
       require: true,
     },
     artist_id: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "Artist",
       require: true,
     },
   },
