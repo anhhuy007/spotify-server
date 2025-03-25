@@ -1,6 +1,9 @@
 import express from "express";
 import artistController from "../controllers/artist.controller.js";
 const router = express.Router();
+
+router.get("/topArtist", artistController.getTopArtist);
+router.get("/mostArtist", artistController.getMostArtist);
 router.get("/popular", artistController.getPopularArtists);
 
 router.get("/listArtist", artistController.getListArtists);
@@ -27,6 +30,5 @@ router.get(
 );
 
 router.get("/getAlbumArtistDetail/:id", artistController.getAlbumArtistDetail);
-router.get("/topArtist", artistController.getTopArtist);
 
 export default router;

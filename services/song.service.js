@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Song from "../models/song.schema.js";
+import Artist from "../models/artist.schema.js";
 
 import helperFunc from "../utils/helperFunc.js";
 
@@ -7,18 +8,31 @@ class SongService {
   getTopSong = async () => {
     try {
       const songs = await Song.find({})
-        .select("_id title image_url artist_ids")
-        .populate("artist_ids", "name")
+        .select("_id title image_url singer_ids like_count")
+        .populate({
+          path: "singer_ids",
+          model: Artist,
+          select: "name",
+        })
         .sort({ like_count: -1 });
-      console.log(albums);
-      return albums.map((album) => ({
-        _id: album._id,
-        title: album.title,
-        artist_name: album.artist_ids.map((artist) => artist.name),
-        cover_url: album.cover_url,
+      return songs.map((song) => ({
+        _id: song._id,
+        title: song.title,
+        artist_name: song.singer_ids.map((artist) => artist.name),
+        image_url: song.image_url,
       }));
     } catch (error) {
-      throw new Error("Get also like recommendations failed");
+      throw error;
+      // new Error("Get top song failed");
+    }
+  };
+  getMostSong = async () => {
+    try {
+      return await Song.findOne({}, "_id title image_url play_count").sort({
+        play_count: -1,
+      }); 
+    } catch (error) {
+      throw new Error("Get most song failed");
     }
   };
   async getSongById(id) {
