@@ -7,6 +7,11 @@ const userSchema = new Schema(
       type: String,
       unique: true,
       sparse: true, // This allows multiple null values
+      default: null,
+    },
+    fcm_token: {
+      type: String,
+      default: null,
     },
     email: {
       type: String,
@@ -43,6 +48,10 @@ const userSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    role: {
+      type: String,
+      default: "user",
+    }
   },
   {
     versionKey: false,
