@@ -61,9 +61,31 @@ const getRandomSongs = asyncHandler(async (req, res) => {
   }
 });
 
+const getTopSong = async (req, res) => {
+  try {
+    const songs = await SongService.getTopSong();
+
+    res.status(200).json(helperFunc.successResponse(true, "Top Song", songs));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getMostSong = async (req, res) => {
+  try {
+    const songs = await SongService.getMostSong();
+
+    res.status(200).json(helperFunc.successResponse(true, "Most Song", songs));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export default {
   getSongById,
   getPopularSongs,
   getNewSongs,
   getRandomSongs,
+  getTopSong,
+  getMostSong,
 };
