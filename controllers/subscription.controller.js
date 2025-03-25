@@ -1,11 +1,15 @@
 import subscriptionService from "../services/subscription.service.js";
 import asyncHandler from "express-async-handler";
 import helperFunc from "../utils/helperFunc.js";
+import notificationService from "../services/notification.service.js";
+import User from "../models/user.schema.js";
 
 const createSubscription = asyncHandler(async (req, res) => {
   const { userId, subscriptionType, startDate, endDate } = req.body;
 
-  try {
+  console.log("Receive subscription request: ", req.body);
+
+  // try {
     const subscription = await subscriptionService.createSubscription(
       userId,
       startDate,
@@ -13,21 +17,37 @@ const createSubscription = asyncHandler(async (req, res) => {
       subscriptionType
     );
 
+    const email = await User.findById(userId).select("email");
+
+    // send payment notification & email to announce subscription
+    await helperFunc.sendSubscriptionEmail(email, {
+      "plan": subscriptionType,
+      "status": "active",
+    });
+
+    await notificationService.sendNotification(
+      userId,
+      "Subscription",
+      "Your subscription has been created successfully"
+    );
+
+    console.log("Send subscription notification");
+
     res
       .status(200)
       .json(
         helperFunc.successResponse(true, "Subscription created", subscription)
       );
-  } catch (error) {
-    res
-      .status(400)
-      .json(
-        helperFunc.errorResponse(
-          false,
-          "Fail to create subscription: " + error.message
-        )
-      );
-  }
+  // } catch (error) {
+  //   res
+  //     .status(400)
+  //     .json(
+  //       helperFunc.errorResponse(
+  //         false,
+  //         "Fail to create subscription: " + error.message
+  //       )
+  //     );
+  // }
 });
 
 const checkUserSubscription = asyncHandler(async (req, res) => {

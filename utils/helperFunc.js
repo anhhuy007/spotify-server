@@ -1,3 +1,13 @@
+import nodemailer from "nodemailer";
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
 function successResponse(success, message, data) {
     // if using pagination, add the pagination object to the response
     if (data && typeof data === 'object' && 'page' in data && 'limit' in data && 'total' in data) {
@@ -71,9 +81,37 @@ function validateSortOptions(options) {
     return { sortBy, sortOrder };
 }
 
+async function sendSubscriptionEmail(email, subscription) {
+    console.log("Sending subscription email");
+    
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Subscription Confirmation - Spotify Clone",
+        html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>Subscription Confirmation</h2>
+                <p>Your subscription to Spotify Clone has been confirmed.</p>
+                <p>Subscription Plan: <strong>${subscription.plan}</strong></p>
+                <p>Subscription Status: <strong>${subscription.status}</strong></p>
+                <p>Thank you for subscribing to Spotify Clone.</p>
+                <p>Thank you,<br>Spotify Clone Team</p>
+            </div>
+        `,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log("Email sent");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export default {
     successResponse,
     errorResponse,
     validatePaginationOptions,
-    validateSortOptions
+    validateSortOptions,
+    sendSubscriptionEmail
 }

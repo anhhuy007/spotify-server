@@ -2,9 +2,16 @@ import admin from "../utils/firebase.js";
 import User from "../models/user.schema.js";
 
 class NotificationService {
-  async sendNotification(deviceToken, title, body) {
+  async sendNotification(userId, title, body) {
+    const deviceToken = await User.findById(userId).select("fcm_token");
+
+    if (!deviceToken) {
+      console.log("Token not found");
+      return;
+    }
+
     const message = {
-      token: deviceToken,
+      token: deviceToken.fcm_token,
       data: {
         title: title,
         body: body,
