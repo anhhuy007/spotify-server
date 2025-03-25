@@ -25,7 +25,7 @@ router.post(
 );
 router.post("/profile/change-language", userController.changeLanguage);
 router.post("/profile/change-theme", userController.changeTheme);
-router.get("/profile/:userId",authMiddleware, userController.getUserProfile);
+router.get("/profile/:userId",authMiddleware.authenticateUser, userController.getUserProfile);
 router.put("/profile", userController.updateUserProfile);
 router.post("/add-fcm-token", userController.addFCMToken);
 
