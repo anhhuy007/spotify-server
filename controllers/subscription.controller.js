@@ -5,7 +5,7 @@ import notificationService from "../services/notification.service.js";
 import User from "../models/user.schema.js";
 
 const createSubscription = asyncHandler(async (req, res) => {
-  const { userId, subscriptionType, startDate, endDate } = req.body;
+  const { userId, subscriptionType, startDate, endDate, total, newCharge } = req.body;
 
   console.log("Receive subscription request: ", req.body);
 
@@ -14,16 +14,15 @@ const createSubscription = asyncHandler(async (req, res) => {
       userId,
       startDate,
       endDate,
-      subscriptionType
+      subscriptionType,
+      total,
+      newCharge
     );
 
     const email = await User.findById(userId).select("email");
 
     // send payment notification & email to announce subscription
-    await helperFunc.sendSubscriptionEmail(email, {
-      "plan": subscriptionType,
-      "status": "active",
-    });
+    await helperFunc.sendSubscriptionEmail(email.email, subscription);
 
     await notificationService.sendNotification(
       userId,
