@@ -5,7 +5,6 @@ import helperFunc from "../utils/helperFunc.js";
 const signup = asyncHandler(async (req, res) => {
   try {
     const user = await authService.signup(req.body);
-    console.log("Signup - User created: ", user);
     res
       .status(201)
       .json(helperFunc.successResponse(true, "User created", user));
@@ -35,7 +34,6 @@ const login = asyncHandler(async (req, res) => {
 
 const logout = asyncHandler(async (req, res) => {
   try {
-    console.log("User log out", req.user._id);
     await authService.logout(req.user._id);
     res
       .status(200)

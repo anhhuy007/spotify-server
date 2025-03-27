@@ -106,9 +106,6 @@ async function updateAlbumReleaseDate() {
       );
       album.release_date = releaseDate;
       await album.save();
-
-      console.log("Album:", album.title);
-      console.log("Release Date:", releaseDate);
     }
 
     console.log("✅ Album release dates updated successfully");

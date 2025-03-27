@@ -40,7 +40,6 @@ const getListDiscographyAlbum = async (req, res) => {
     const { id } = req.params;
 
     const albums = await ArtistService.getListDiscographyAlbum(id);
-    console.log(albums);
     res
       .status(200)
       .json(helperFunc.successResponse(true, "List albums discography", albums));
@@ -54,7 +53,6 @@ const getListDiscographyEP = async (req, res) => {
     const { id } = req.params;
 
     const albums = await ArtistService.getListDiscographyEP(id);
-    console.log(albums);
 
     res
       .status(200)

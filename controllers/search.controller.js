@@ -4,10 +4,7 @@ import helperFunc from "../utils/helperFunc.js";
 
 const getSearchResult = asyncHandler(async (req, res) => {
   try {
-    console.log(req.query);
-
     const response = await SearchService.getSearchResult(req.query);
-    console.log(response);
     res
       .status(200)
       .json(

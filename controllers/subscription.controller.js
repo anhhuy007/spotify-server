@@ -5,11 +5,10 @@ import notificationService from "../services/notification.service.js";
 import User from "../models/user.schema.js";
 
 const createSubscription = asyncHandler(async (req, res) => {
-  const { userId, subscriptionType, startDate, endDate, total, newCharge } = req.body;
+  const { userId, subscriptionType, startDate, endDate, total, newCharge } =
+    req.body;
 
-  console.log("Receive subscription request: ", req.body);
-
-  // try {
+  try {
     const subscription = await subscriptionService.createSubscription(
       userId,
       startDate,
@@ -30,23 +29,21 @@ const createSubscription = asyncHandler(async (req, res) => {
       "Your subscription has been created successfully"
     );
 
-    console.log("Send subscription notification");
-
     res
       .status(200)
       .json(
         helperFunc.successResponse(true, "Subscription created", subscription)
       );
-  // } catch (error) {
-  //   res
-  //     .status(400)
-  //     .json(
-  //       helperFunc.errorResponse(
-  //         false,
-  //         "Fail to create subscription: " + error.message
-  //       )
-  //     );
-  // }
+  } catch (error) {
+    res
+      .status(400)
+      .json(
+        helperFunc.errorResponse(
+          false,
+          "Fail to create subscription: " + error.message
+        )
+      );
+  }
 });
 
 const checkUserSubscription = asyncHandler(async (req, res) => {

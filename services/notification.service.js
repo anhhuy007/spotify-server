@@ -44,10 +44,8 @@ class NotificationService {
 
     for (const token of deviceTokens) {
       if (!token) {
-        // console.log("Token not found");
         continue;
       }
-      console.log("Token: ", token);
     }
 
     const message = {

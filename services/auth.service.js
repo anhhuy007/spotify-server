@@ -37,8 +37,6 @@ class AuthService {
   async signup(data) {
     let { username, email, password, dob, avatarUrl } = data;
 
-    console.log("Signup data:", data);
-
     if (!username || !email || !password || !dob) {
       throw new Error("Missing required fields");
     }
@@ -150,7 +148,6 @@ class AuthService {
     if (!tokenId) throw new Error("Missing tokenId");
 
     try {
-      console.log("Verifying Google user...");
       const ticket = await client.verifyIdToken({
         idToken: tokenId,
         audience: process.env.GOOGLE_CLIENT_ID,
@@ -160,8 +157,6 @@ class AuthService {
       const googleId = payload["sub"];
       const email = payload["email"];
       const username = payload["name"];
-
-      console.log("Google user:", { googleId, email, username });
 
       let user = await User.findOne({
         $or: [{ email }, { googleId }],
@@ -208,9 +203,6 @@ class AuthService {
       otp,
       expiry: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
     });
-
-    console.log("Now: ", new Date(Date.now()));
-    console.log("Expery date:", savedOTP.expiry);
 
     await savedOTP.save();
 

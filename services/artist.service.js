@@ -74,7 +74,6 @@ class ArtistService {
 
   getListDiscographyEP = async (artistId) => {
     try {
-      console.log(artistId);
       return await Song.find(
         { singer_ids: { $in: [artistId] } },
         "_id title image_url create_at "

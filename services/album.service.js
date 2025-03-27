@@ -41,7 +41,6 @@ class AlbumService {
           select: "name",
         });
       // .sort({ like_count: -1 })
-      console.log(albums);
       return albums.map((album) => ({
         _id: album._id,
         title: album.title,
