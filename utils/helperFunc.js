@@ -88,12 +88,13 @@ function validateSortOptions(options) {
   return { sortBy, sortOrder };
 }
 
-async function sendSubscriptionEmail(email, subscription) {
+async function sendSubscriptionEmail(username, email, subscription) {
   // enddate - startdate = duration (in months)
   const duration = differenceInMonths(parseISO(subscription.endDate.toISOString()), parseISO(subscription.startDate.toISOString()));
 
   const html = invoiceTemplate(
     subscription._id,
+    username, 
     email,
     getPlan(subscription.subscriptionType),
     duration,
@@ -128,6 +129,7 @@ function convertTimeStampToDate(timestamp) {
 
 function invoiceTemplate(
   invoiceId,
+  username, 
   useremail,
   plan,
   duration,
@@ -166,7 +168,7 @@ function invoiceTemplate(
                                             <p style="font-size: 14px; color: #666666; margin-top: 5px;">Invoice: ${invoiceId}</p>
                                         </div>
                                         <div style="margin-bottom: 30px;">
-                                            <h3 style="font-size: 18px; font-weight: bold; color: #000000; margin: 0; padding: 0;">John Doe</h3>
+                                            <h3 style="font-size: 18px; font-weight: bold; color: #000000; margin: 0; padding: 0;">${username}</h3>
                                             <p style="font-size: 14px; color: #666666; margin-top: 5px;"> ${useremail}</p>
                                         </div>
                                         <div style="margin-bottom: 30px;">

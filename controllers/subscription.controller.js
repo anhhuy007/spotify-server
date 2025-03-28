@@ -18,10 +18,10 @@ const createSubscription = asyncHandler(async (req, res) => {
       newCharge
     );
 
-    const email = await User.findById(userId).select("email");
+    const user = await User.findById(userId);
 
     // send payment notification & email to announce subscription
-    await helperFunc.sendSubscriptionEmail(email.email, subscription);
+    await helperFunc.sendSubscriptionEmail(user.username, user.email, subscription);
 
     await notificationService.sendNotification(
       userId,
