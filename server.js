@@ -1,10 +1,10 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
-import express from 'express';
-import cors from 'cors';
-import indexRoutes from './routes/index.js';
-import { connectDB, uploadData } from './utils/database.js';
+import express from "express";
+import cors from "cors";
+import indexRoutes from "./routes/index.js";
+import { connectDB, uploadData } from "./utils/database.js";
 
 const app = express();
 
@@ -22,8 +22,12 @@ connectDB();
 // notificationService.sendNotification('de1Epf7ySEO-bJxSbcaXiM:APA91bGFOrPp-TXU3jLGxnHeBolgPZNIbpcMAZGMT-HXWCMIb1CfFPHDeKHZST344gtTR4Y2DsmUKS3daoqc_iC6h0w2SfnsXqjpreQuWTXxP9imLfAu3K0', 'Hello', 'This is a test notification');
 
 // routes
-app.use('/', indexRoutes);
+app.use("/", indexRoutes);
+
+app.get("/healthz", (req, res) => {
+  res.status(200).send("OK");
+});
 
 app.listen(process.env.PORT, () => {
-    console.log(`✅ Server is running on port ${process.env.PORT}`);
+  console.log(`✅ Server is running on port ${process.env.PORT}`);
 });
