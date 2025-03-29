@@ -60,8 +60,6 @@ const changePassword = asyncHandler(async (req, res) => {
 
 const uploadAvatar = asyncHandler(async (req, res) => {
   try {
-    console.log("Full file object:", req.file);
-
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -128,7 +126,6 @@ const changeLanguage = asyncHandler(async (req, res) => {
 });
 
 const addFCMToken = asyncHandler(async (req, res) => {
-  console.log("Add FCM token request body: ", req.body);
   try {
     const user = await userService.addFCMToken(req.user._id, req.body.fcmToken);
     res

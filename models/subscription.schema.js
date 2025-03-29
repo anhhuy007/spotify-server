@@ -31,6 +31,14 @@ const SubscriptionSchema = new Schema(
       enum: Object.values(SubscriptionType),
       required: true,
     },
+    total: {
+      type: Number,
+      required: true,
+    },
+    newCharge: {
+      type: Number,
+      required: true,
+    },
   },
   {
     versionKey: false,

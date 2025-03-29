@@ -1,7 +1,7 @@
 import Subscription from "../models/subscription.schema.js";
 
 class SubscriptionService {
-  async createSubscription(userId, startDate, endDate, subscriptionType) {
+  async createSubscription(userId, startDate, endDate, subscriptionType, total, newCharge) {
     if (!userId || !startDate || !endDate || !subscriptionType) {
       throw new Error("Missing required fields");
     }
@@ -23,6 +23,8 @@ class SubscriptionService {
       startDate,
       endDate,
       subscriptionType,
+      total,
+      newCharge
     });
 
     return subscription.save();

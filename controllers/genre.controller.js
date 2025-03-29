@@ -5,7 +5,6 @@ import GenreService from "../services/genre.service.js";
 const getGenres = asyncHandler(async (req, res) => {
   try {
     const response = await GenreService.getGenres(req.query);
-    console.log(response);
     res
       .status(200)
       .json(

@@ -40,7 +40,6 @@ const getListDiscographyAlbum = async (req, res) => {
     const { id } = req.params;
 
     const albums = await ArtistService.getListDiscographyAlbum(id);
-    console.log(albums);
     res
       .status(200)
       .json(
@@ -56,7 +55,6 @@ const getListDiscographyEP = async (req, res) => {
     const { id } = req.params;
 
     const albums = await ArtistService.getListDiscographyEP(id);
-    console.log(albums);
 
     res
       .status(200)
@@ -151,18 +149,6 @@ const getAlbumArtistDetail = async (req, res) => {
   }
 };
 
-const getTopArtist = async (req, res) => {
-  try {
-    const artists = await ArtistService.getTopArtist();
-
-    res
-      .status(200)
-      .json(helperFunc.successResponse(true, "Top album", artists));
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
 const getPopularArtists = asyncHandler(async (req, res) => {
   try {
     const artists = await ArtistService.getPopularArtists(req.query);
@@ -201,6 +187,30 @@ const getArtistSongs = asyncHandler(async (req, res) => {
   }
 });
 
+const getTopArtist = async (req, res) => {
+  try {
+    const artists = await ArtistService.getTopArtist();
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Top Artist", artists));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getMostArtist = async (req, res) => {
+  try {
+    const artists = await ArtistService.getMostArtist();
+
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Most Artist", artists));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export default {
   getListArtists,
   getArtist,
@@ -213,5 +223,6 @@ export default {
   getAlbumArtistDetail,
   getTopArtist,
   getPopularArtists,
+  getMostArtist,
   getArtistSongs,
 };

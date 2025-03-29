@@ -20,7 +20,7 @@ const getMostAlbum = async (req, res) => {
 
     res
       .status(200)
-      .json(helperFunc.successResponse(true, "Top album", artists));
+      .json(helperFunc.successResponse(true, "Most album", artists));
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

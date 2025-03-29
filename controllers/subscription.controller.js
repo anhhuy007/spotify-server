@@ -1,16 +1,32 @@
 import subscriptionService from "../services/subscription.service.js";
 import asyncHandler from "express-async-handler";
 import helperFunc from "../utils/helperFunc.js";
+import notificationService from "../services/notification.service.js";
+import User from "../models/user.schema.js";
 
 const createSubscription = asyncHandler(async (req, res) => {
-  const { userId, subscriptionType, startDate, endDate } = req.body;
+  const { userId, subscriptionType, startDate, endDate, total, newCharge } =
+    req.body;
 
   try {
     const subscription = await subscriptionService.createSubscription(
       userId,
       startDate,
       endDate,
-      subscriptionType
+      subscriptionType,
+      total,
+      newCharge
+    );
+
+    const email = await User.findById(userId).select("email");
+
+    // send payment notification & email to announce subscription
+    await helperFunc.sendSubscriptionEmail(email.email, subscription);
+
+    await notificationService.sendNotification(
+      userId,
+      "Subscription",
+      "Your subscription has been created successfully"
     );
 
     res

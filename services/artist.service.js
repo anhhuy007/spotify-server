@@ -74,7 +74,6 @@ class ArtistService {
 
   getListDiscographyEP = async (artistId) => {
     try {
-      console.log(artistId);
       return await Song.find(
         { singer_ids: { $in: [artistId] } },
         "_id title image_url create_at "
@@ -131,7 +130,18 @@ class ArtistService {
 
   getTopArtist = async () => {
     try {
-      return await Artist.find({}, "_id name avatar_url followers ");
+      return await Artist.find({}, "_id name followers avatar_url")
+        .sort({ followers: -1 }) // Sắp xếp giảm dần theo play_count
+        .limit(10); // Giới hạn 10 album
+    } catch (error) {
+      throw new Error("Get top artist failed");
+    }
+  };
+  getMostArtist = async () => {
+    try {
+      return await Artist.findOne({}, "_id name followers avatar_url").sort({
+        followers: -1,
+      }); // Sắp xếp giảm dần theo play_count
     } catch (error) {
       throw new Error("Get top artist failed");
     }
