@@ -8,13 +8,14 @@ class SongService {
   getTopSong = async () => {
     try {
       const songs = await Song.find({})
-        .select("_id title image_url singer_ids like_count")
+        .select("_id title image_url singer_ids play_count")
         .populate({
           path: "singer_ids",
           model: Artist,
           select: "name",
         })
-        .sort({ like_count: -1 });
+        .sort({ play_count: -1 })
+        .limit(10);
       return songs.map((song) => ({
         _id: song._id,
         title: song.title,
