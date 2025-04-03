@@ -16,7 +16,7 @@ const getSongById = asyncHandler(async (req, res) => {
 
 const getPopularSongs = asyncHandler(async (req, res) => {
   try {
-    const songs = await SongService.getPopularSongs(req.query);
+    const songs = await SongService.getPopularSongs(req.params.id, req.query);
 
     res
       .status(200)
