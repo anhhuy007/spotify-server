@@ -13,7 +13,7 @@ router.get(
   albumController.getPopularAlbums
 );
 router.get("/new", albumController.getNewAlbums);
-router.get("/byArtists", albumController.getAlbumsByArtistNames);
+router.get("/by-artists", albumController.getAlbumsByArtistNames);
 router.get("/:id", albumController.getAlbumById);
 router.get("/:id/songs", albumController.getAlbumSongs);
 
