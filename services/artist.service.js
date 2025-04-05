@@ -177,6 +177,9 @@ class ArtistService {
         this.transformSongData(song)
       );
 
+      // Console log transformedSongs
+      console.log("Transformed Songs:", transformedSongs);
+
       return {
         success: true,
         total: totalSongs,
