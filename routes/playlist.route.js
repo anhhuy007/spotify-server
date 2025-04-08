@@ -47,4 +47,40 @@ router.delete(
   playlistController.removeSongFromPlaylist
 );
 
+router.get(
+  "/user-playlist",
+  authMiddleware.authenticateUser,
+  playlistController.getUserPlaylist
+);
+router.post(
+  "/create-playlist",
+  authMiddleware.authenticateUser,
+  playlistController.createNewPlaylist
+);
+router.post(
+  "/add-song",
+  authMiddleware.authenticateUser,
+  playlistController.addSongToPlaylist
+);
+router.get(
+  "/playlist-by-id/:id",
+  authMiddleware.authenticateUser,
+  playlistController.getPlaylistById
+);
+router.get(
+  "/playlist-songs/:id",
+  authMiddleware.authenticateUser,
+  playlistController.getPlaylistSongs
+);
+router.delete(
+  "/:playlistId/remove-song/:songId",
+  authMiddleware.authenticateUser,
+  playlistController.removeSongFromPlaylist
+);
+router.post(
+  "/:playlistId/update-info",
+  authMiddleware.authenticateUser,
+  playlistController.updatePlaylistInfo
+);
+
 export default router;

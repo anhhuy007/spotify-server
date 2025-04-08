@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Song from "../models/song.schema.js";
 import Artist from "../models/artist.schema.js";
-
+import Playlist from "../models/playlist.schema.js";
 import helperFunc from "../utils/helperFunc.js";
 
 class SongService {
@@ -24,14 +24,13 @@ class SongService {
       }));
     } catch (error) {
       throw error;
-      // new Error("Get top song failed");
     }
   };
   getMostSong = async () => {
     try {
       return await Song.findOne({}, "_id title image_url play_count").sort({
         play_count: -1,
-      }); 
+      });
     } catch (error) {
       throw new Error("Get most song failed");
     }
@@ -51,31 +50,38 @@ class SongService {
     return this.transformSongData(song);
   }
 
-  async getPopularSongs({ page = 1, limit = 10 }) {
-    const skip = (page - 1) * limit;
+  async getPopularSongs(playlistId, { limit = 10 } = {}) {
     const parsedLimit = parseInt(limit);
-    const parsedPage = parseInt(page);
 
-    const songs = await Song.find()
-      .sort({ like_count: -1 })
-      .skip(skip)
-      .limit(parsedLimit)
-      .populate("singer_ids", "name bio avatar_url followers")
-      .populate("author_ids", "name bio avatar_url followers")
-      .populate("genre_ids", "name description image_url createdAt")
+    // Lấy danh sách song_ids từ playlist
+    const playlist = await Playlist.findById(playlistId)
+      .select("song_ids")
       .lean();
+    const excludedSongIds = playlist ? playlist.song_ids : [];
 
-    const total = await Song.countDocuments();
-    const totalPages = Math.ceil(total / parsedLimit);
+    // Sử dụng MongoDB Aggregation để lấy bài hát ngẫu nhiên, loại trừ các bài hát trong playlist
+    const songs = await Song.aggregate([
+      { $match: { _id: { $nin: excludedSongIds } } }, // Loại trừ các bài hát trong playlist
+      { $sample: { size: parsedLimit } }, // Lấy ngẫu nhiên limit bài hát
+    ]);
+
+    // Populate dữ liệu sau khi sử dụng aggregation
+    const populatedSongs = await Song.populate(songs, [
+      { path: "singer_ids", select: "name bio avatar_url followers" },
+      { path: "author_ids", select: "name bio avatar_url followers" },
+      { path: "genre_ids", select: "name description image_url createdAt" },
+    ]);
 
     // Transform each song to match the Java class structure
-    const transformedSongs = songs.map((song) => this.transformSongData(song));
+    const transformedSongs = populatedSongs.map((song) =>
+      this.transformSongData(song)
+    );
 
     return {
-      total,
-      page: parsedPage,
+      total: transformedSongs.length,
+      page: 1,
       limit: parsedLimit,
-      totalPages,
+      totalPages: 1,
       items: transformedSongs,
     };
   }

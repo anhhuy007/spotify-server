@@ -8,8 +8,10 @@ import artistRoutes from "./artist.route.js";
 import subscriptionRoutes from "./subscription.route.js";
 import songRoutes from "./song.route.js";
 import notificationRoutes from "./notification.route.js";
+import playlistRoutes from "./playlist.route.js";
 import followerRoutes from "./follower.route.js";
 import playlistRoutes from "./playlist.route.js";
+import chatbotRoutes from "./chatbot.route.js";
 
 const router = express.Router();
 
@@ -23,10 +25,13 @@ router.use("/search", searchRoutes);
 router.use("/genre", genreRoutes);
 router.use("/artist", artistRoutes);
 router.use("/song", songRoutes);
-router.use("/subscription", subscriptionRoutes);  
+router.use("/subscription", subscriptionRoutes);
 router.use("/notification", notificationRoutes);
+router.use("/playlist", playlistRoutes);
 router.use("/follower", followerRoutes);
 router.use("/playlist", playlistRoutes);
+router.use("/chatbot", chatbotRoutes);
+
 
 router.get("/", (req, res) => {
   res.send("Hello from Spotify Clone!");
