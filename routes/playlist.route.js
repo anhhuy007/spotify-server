@@ -4,24 +4,41 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
+
+
+
 // Public routes
 router.get("/top", playlistController.getTopPlaylists);
 router.get("/popular", playlistController.getPopularPlaylists);
 router.get("/new", playlistController.getNewPlaylists);
-
+router.get("/", playlistController.getPlaylistsWithFilter);
 router.get("/:id", playlistController.getPlaylistById);
 router.get("/:id/songs", playlistController.getPlaylistSongs);
-router.get("/", playlistController.getPlaylistsWithFilter);
 
-// Protected routes - require authentication
 router.get(
-  "/user/myPlaylists",
+  "/library/playlists",
   authMiddleware.authenticateUser,
   playlistController.getUserPlaylists
 );
 
+
+// Protected routes - require authentication
+// User playlist management
+
+router.get(
+  "/playlist/:id",
+  authMiddleware.authenticateUser,
+  playlistController.getPlaylistById
+);
+router.get(
+  "/playlist/:id/songs",
+  authMiddleware.authenticateUser,
+  playlistController.getPlaylistSongs
+);
+
+// Playlist CRUD operations
 router.post(
-  "/",
+  "/createNewPlaylist",
   authMiddleware.authenticateUser,
   playlistController.createPlaylist
 );
@@ -35,7 +52,13 @@ router.delete(
   authMiddleware.authenticateUser,
   playlistController.deletePlaylist
 );
+router.put(
+  "/:id/info",
+  authMiddleware.authenticateUser,
+  playlistController.updatePlaylistInfo
+);
 
+// Song management within playlists
 router.post(
   "/:playlistId/songs/:songId",
   authMiddleware.authenticateUser,
@@ -46,6 +69,7 @@ router.delete(
   authMiddleware.authenticateUser,
   playlistController.removeSongFromPlaylist
 );
+
 
 router.get(
   "/user-playlist",

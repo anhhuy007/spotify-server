@@ -43,9 +43,6 @@ class FollowerService {
       image_url: album.artist_id.avatar_url,
       flCount: album.artist_id.followers,
     }));
-    console.log( user_id );
-    console.log(re);
-          // .sort({ like_count: -1 })
           return re
     
     

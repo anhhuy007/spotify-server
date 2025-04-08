@@ -29,7 +29,6 @@ class AlbumService {
   };
 
   getAlsoLike = async () => {
-    try {
       // Query albums and populate with artist information
       const albums = await Album.find({})
         .select("_id title cover_url artist_ids")
@@ -45,9 +44,6 @@ class AlbumService {
         artist_name: album.artist_ids.map((artist) => artist.name),
         cover_url: album.cover_url,
       }));
-    } catch (error) {
-      throw new Error("Get also like recommendations failed");
-    }
   };
 
   async getPopularAlbums(options = {}) {

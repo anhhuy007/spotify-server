@@ -293,21 +293,6 @@ class PlaylistService {
     };
   }
 
-  async createPlaylist(playlistData) {
-    const newPlaylist = new Playlist({
-      name: playlistData.name,
-      description: playlistData.description || "",
-      cover_url: playlistData.cover_url || "",
-      owner_id: playlistData.owner_id,
-      song_ids: playlistData.song_ids || [],
-      is_public:
-        playlistData.is_public !== undefined ? playlistData.is_public : true,
-    });
-
-    await newPlaylist.save();
-    return newPlaylist;
-  }
-
   async updatePlaylist(playlistId, userId, updateData) {
     // Find the playlist
     const playlist = await Playlist.findById(playlistId);
@@ -425,19 +410,43 @@ class PlaylistService {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parsedLimit)
+      .select("_id name cover_url owner_id song_ids")
       .populate({
-        path: "song_ids",
-        select: "title image_url",
-      })
-      .lean();
+        path: "owner_id",
+        model: User,
+        select: "username",
+      });
 
-    return {
-      total,
-      page: parsedPage,
-      limit: parsedLimit,
-      totalPages,
-      items: this.cleanedPlaylistData(playlists),
-    };
+    const re = playlists.map((playlist) => ({
+      _id: playlist._id,
+      name: playlist.name,
+      cover_url: playlist.cover_url,
+      creator_name: playlist.owner_id.username,
+      song_count: playlist.song_ids.length,
+    }));
+      
+    console.log("User Playlists:", re.length);
+      
+
+    return re;
+  }
+
+  async createPlaylist(playlistData, userId, options = {}) {
+    // Create and save the new playlist
+    const newPlaylist = new Playlist({
+      name: playlistData.name,
+      description: playlistData.description || "",
+      cover_url: playlistData.cover_url || "",
+      owner_id: playlistData.owner_id,
+      song_ids: playlistData.song_ids || [],
+      is_public:
+        playlistData.is_public !== undefined ? playlistData.is_public : true,
+    });
+
+      await newPlaylist.save();
+      
+      return newPlaylist;
+
   }
 
   async getUserPlaylist(user, options = {}) {

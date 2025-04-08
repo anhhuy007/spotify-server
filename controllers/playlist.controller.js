@@ -103,6 +103,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
     const response = await PlaylistService.createPlaylist({
       ...req.body,
       owner_id: userId,
+      ...req.query
     });
     res
       .status(201)
