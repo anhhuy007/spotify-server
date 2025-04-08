@@ -10,6 +10,7 @@ import songRoutes from "./song.route.js";
 import notificationRoutes from "./notification.route.js";
 import playlistRoutes from "./playlist.route.js";
 import followerRoutes from "./follower.route.js";
+import chatbotRoutes from "./chatbot.route.js";
 
 const router = express.Router();
 
@@ -27,6 +28,8 @@ router.use("/subscription", subscriptionRoutes);
 router.use("/notification", notificationRoutes);
 router.use("/playlist", playlistRoutes);
 router.use("/follower", followerRoutes);
+router.use("/chatbot", chatbotRoutes);
+
 
 router.get("/", (req, res) => {
   res.send("Hello from Spotify Clone!");
