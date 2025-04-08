@@ -232,9 +232,6 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
   }
 });
 
-import asyncHandler from "express-async-handler";
-import PlaylistService from "../services/playlist.service.js";
-import helperFunc from "../utils/helperFunc.js";
 const getUserPlaylist = asyncHandler(async (req, res) => {
   try {
     const response = await PlaylistService.getUserPlaylist(req.user, req.query);
