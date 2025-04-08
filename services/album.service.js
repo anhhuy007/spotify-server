@@ -21,13 +21,11 @@ class AlbumService {
     }
   };
   getMostAlbum = async () => {
-    try {
+
       return await Album.findOne({}, "_id title cover_url play_count").sort({
         play_count: -1,
       }); // Sắp xếp giảm dần theo play_count
-    } catch (error) {
-      throw new Error("Get top album failed");
-    }
+
   };
 
   getAlsoLike = async () => {

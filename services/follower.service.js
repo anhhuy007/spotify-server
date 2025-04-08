@@ -29,9 +29,26 @@ class FollowerService {
   };
 
   getFollowedArtists = async (user_id) => {
-    return await Follower.find({ user_id })
-      .select("_id user_id artist_id")
-      .lean();
+      const albums = await Follower.find({ user_id })
+           .select("artist_id")
+        .populate({
+          path: "artist_id",
+          model: Artist,
+          select: "avatar_url name followers"
+        });
+    
+    const re = albums.map((album) => ({
+      _id: album.artist_id._id,
+      name: album.artist_id.name,
+      image_url: album.artist_id.avatar_url,
+      flCount: album.artist_id.followers,
+    }));
+    console.log( user_id );
+    console.log(re);
+          // .sort({ like_count: -1 })
+          return re
+    
+    
   };
 
   deleteById = async (_id) => {
