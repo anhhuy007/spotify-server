@@ -75,7 +75,20 @@ class SubscriptionService {
       throw new Error("Missing required fields");
     }
 
-    return Subscription.findOne({ userId }).sort({ createdAt: -1 });
+    const subscription = await Subscription.findOne({ userId }).sort({
+      createdAt: -1,
+    });
+
+    // check if subscription is active
+    if (subscription && subscription.endDate > new Date()) {
+      return subscription;
+    }
+
+    // if subscription is not active, set isActive to false
+    subscription.isActive = false;
+    await subscription.save();
+
+    return null;
   }
 
   async getAllUserSubscriptions(userId, options = {}) {

@@ -16,7 +16,7 @@ router.post(
   followerController.addFollower
 );
 router.get(
-  "/:user_id/list",
+  "/list",
   authMiddleware.authenticateUser,
   followerController.getFollowedArtists
 );

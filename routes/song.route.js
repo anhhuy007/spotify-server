@@ -19,7 +19,6 @@ router.get(
   authMiddleware.authenticateUser,
   songController.getPopularSongs
 );
-
 router.get("/new", authMiddleware.authenticateUser, songController.getNewSongs);
 router.get(
   "/random",
@@ -27,5 +26,6 @@ router.get(
   songController.getRandomSongs
 );
 router.get("/:id", authMiddleware.authenticateUser, songController.getSongById);
+
 
 export default router;
