@@ -28,6 +28,12 @@ router.get(
   authMiddleware.authenticateUser,
   playlistController.getPlaylistSongs
 );
+router.get(
+  "/random-songs/:id",
+  authMiddleware.authenticateUser,
+  playlistController.getRandomSongs
+);
+
 router.delete(
   "/:playlistId/remove-song/:songId",
   authMiddleware.authenticateUser,
@@ -37,6 +43,11 @@ router.post(
   "/:playlistId/update-info",
   authMiddleware.authenticateUser,
   playlistController.updatePlaylistInfo
+);
+router.delete(
+  "/remove-playlist/:playlistId",
+  authMiddleware.authenticateUser,
+  playlistController.removePlaylist
 );
 
 export default router;

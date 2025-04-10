@@ -57,6 +57,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 });
 const getPlaylistSongs = asyncHandler(async (req, res) => {
   try {
+    console.log("Get playlist songs: ", req.params.id, req.query);
     const response = await PlaylistService.getPlaylistSongs(
       req.params.id,
       req.query
@@ -72,6 +73,7 @@ const getPlaylistSongs = asyncHandler(async (req, res) => {
 });
 const removeSongFromPlaylist = asyncHandler(async (req, res) => {
   try {
+    
     const response = await PlaylistService.removeSongFromPlaylist(
       req.params.playlistId,
       req.params.songId
@@ -112,6 +114,36 @@ const updatePlaylistInfo = async (req, res) => {
   }
 };
 
+const removePlaylist = async (req, res) => {
+  try {
+    const response = await PlaylistService.removePlaylist(req.params.playlistId);
+    res
+      .status(200)
+      .json(helperFunc.successResponse(true, "Playlist deleted", response));
+  } catch (error) {
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to delete playlist"));
+  }
+};
+const getRandomSongs = asyncHandler(async (req, res) => {
+  try {
+    const songs = await PlaylistService.getRandomSongs(req.params.id, req.query);
+
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(
+          true,
+          "Popular songs query successful",
+          songs
+        )
+      );
+  } catch (error) {
+    res.status(404).json(helperFunc.errorResponse(false, error.message));
+  }
+});
+
 export default {
   getUserPlaylist,
   createNewPlaylist,
@@ -120,4 +152,6 @@ export default {
   getPlaylistSongs,
   removeSongFromPlaylist,
   updatePlaylistInfo,
+  removePlaylist,
+  getRandomSongs
 };
