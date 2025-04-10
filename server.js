@@ -17,16 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 // uploadData();
 
-// test notification
-// import notificationService from './services/notification.service.js';
-// notificationService.sendNotification('de1Epf7ySEO-bJxSbcaXiM:APA91bGFOrPp-TXU3jLGxnHeBolgPZNIbpcMAZGMT-HXWCMIb1CfFPHDeKHZST344gtTR4Y2DsmUKS3daoqc_iC6h0w2SfnsXqjpreQuWTXxP9imLfAu3K0', 'Hello', 'This is a test notification');
-
 // routes
 app.use("/", indexRoutes);
-
-app.get("/healthz", (req, res) => {
-  res.status(200).send("OK");
-});
 
 app.listen(process.env.PORT, () => {
   console.log(`✅ Server is running on port ${process.env.PORT}`);

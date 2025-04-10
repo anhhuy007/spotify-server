@@ -135,12 +135,34 @@ async function updateSongSchema() {
   }
 }
 
+async function updateSongPlanTypes() {
+  try {
+    const songs = await Song.find();
+    const availablePlans = ['free', 'mini', 'student', 'individual'];
+
+    for (const song of songs) {
+      const numberOfPlans = Math.floor(Math.random() * availablePlans.length) + 1; // 1 to 3 plans
+      const randomPlans = [...availablePlans]
+        .sort(() => 0.5 - Math.random()) // shuffle
+        .slice(0, numberOfPlans); // pick N random plans
+
+      song.planTypes = randomPlans;
+      await song.save();
+    }
+
+    console.log(`✅ planTypes updated for ${songs.length} songs`);
+  } catch (error) {
+    console.error("❌ Error updating planTypes for songs:", error);
+  }
+}
+
 async function uploadData() {
   // await uploadUsers();
   // await updateAlbumSchema();
   // await updateAlbumReleaseDate();
   // await updateUserSchema();
   // updateSongSchema();
+  updateSongPlanTypes();
 }
 
 export { connectDB, disconnectDB, uploadData };

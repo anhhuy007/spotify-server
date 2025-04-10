@@ -1,14 +1,34 @@
 import asyncHandler from "express-async-handler";
 import helperFunc from "../utils/helperFunc.js";
 import SongService from "../services/song.service.js";
+import subscriptionService from "../services/subscription.service.js";
 
 const getSongById = asyncHandler(async (req, res) => {
   try {
     const song = await SongService.getSongById(req.params.id);
 
-    res
-      .status(200)
-      .json(helperFunc.successResponse(true, "Song query successful", song));
+    // check subscription plan
+    const userSubscription = await subscriptionService.getUserSubscription(
+      req.user._id
+    );
+
+    let userPlan = "free";
+    if (userSubscription) {
+      userPlan = userSubscription.subscriptionType;
+    }
+
+    // check if user has access without ad
+    const requiredPlanTypes = song.planTypes;
+    const hasRequiredPlan = requiredPlanTypes.includes(userPlan);
+
+    const shouldPlayAd = !hasRequiredPlan || requiredPlanTypes.includes("free");
+
+    res.status(200).json(
+      helperFunc.successResponse(true, "Song query successful", {
+        song,
+        shouldPlayAd,
+      })
+    );
   } catch (error) {
     res.status(404).json(helperFunc.errorResponse(false, error.message));
   }

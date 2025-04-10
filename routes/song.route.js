@@ -13,6 +13,10 @@ router.get(
 );
 router.get("/new", songController.getNewSongs);
 router.get("/random", songController.getRandomSongs);
-router.get("/:id", songController.getSongById);
+router.get(
+  "/:id", 
+  authMiddleware.authenticateUser,
+  songController.getSongById
+);
 
 export default router;
