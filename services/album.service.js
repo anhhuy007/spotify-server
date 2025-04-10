@@ -21,17 +21,14 @@ class AlbumService {
     }
   };
   getMostAlbum = async () => {
-    try {
+
       return await Album.findOne({}, "_id title cover_url play_count").sort({
         play_count: -1,
       }); // Sắp xếp giảm dần theo play_count
-    } catch (error) {
-      throw new Error("Get top album failed");
-    }
+
   };
 
   getAlsoLike = async () => {
-    try {
       // Query albums and populate with artist information
       const albums = await Album.find({})
         .select("_id title cover_url artist_ids")
@@ -47,9 +44,6 @@ class AlbumService {
         artist_name: album.artist_ids.map((artist) => artist.name),
         cover_url: album.cover_url,
       }));
-    } catch (error) {
-      throw new Error("Get also like recommendations failed");
-    }
   };
 
   async getPopularAlbums(options = {}) {

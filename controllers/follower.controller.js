@@ -70,7 +70,7 @@ const deleteFollower = asyncHandler(async (req, res) => {
 const getFollowedArtists = asyncHandler(async (req, res) => {
   try {
     const followedArtists = await FollowerService.getFollowedArtists(
-      req.params.user_id
+      req.user._id
     );
     res
       .status(200)

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Song from "../models/song.schema.js";
 import Artist from "../models/artist.schema.js";
-
+import Playlist from "../models/playlist.schema.js";
 import helperFunc from "../utils/helperFunc.js";
 
 class SongService {
@@ -24,7 +24,6 @@ class SongService {
       }));
     } catch (error) {
       throw error;
-      // new Error("Get top song failed");
     }
   };
   getMostSong = async () => {
