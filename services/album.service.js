@@ -313,48 +313,81 @@ class AlbumService {
   }
 
   async getAlbumsByArtistNames(options = {}) {
-    try {
-      let { artistNames, page = 1, limit = 10 } = options;
-      // Chuyển đổi thành số nguyên, tránh NaN
-      const pageNum = Math.max(parseInt(page, 10) || 1, 1);
-      const limitNum = Math.max(parseInt(limit, 10) || 10, 1);
+    console.log("[AlbumService] Fetching albums by artist names");
 
-      // Đảm bảo artistNames là mảng
-      if (!Array.isArray(artistNames)) {
-        artistNames = [artistNames];
-      }
+    const {
+      artistNames = [],
+      page = 1,
+      limit = 10,
+    } = helperFunc.validatePaginationOptions(options);
+    const skip = (page - 1) * limit;
 
-      // Đếm số album có nghệ sĩ thuộc danh sách
-      let totalAlbums = await Album.countDocuments({
-        artist_names: { $in: artistNames },
-      });
+    const artistNameArray = Array.isArray(artistNames)
+      ? artistNames
+      : [artistNames];
+    const baseQuery = { artist_names: { $in: artistNameArray } };
 
-      let albums = [];
-      if (totalAlbums > 0) {
-        albums = await Album.find({ artist_names: { $in: artistNames } })
-          .skip((pageNum - 1) * limitNum)
-          .limit(limitNum);
-      } else {
-        // Nếu không có album nào, chọn ngẫu nhiên 3 album
-        albums = await Album.aggregate([{ $sample: { size: 3 } }]);
-        totalAlbums = albums.length;
-      }
-      const formattedAlbums = albums.map(({ artist_ids, ...album }) => ({
+
+    let total = await Album.countDocuments(baseQuery);
+    let albums = [];
+
+    if (total > 0) {
+      albums = await Album.find(baseQuery)
+        .sort({ like_count: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: "artist_ids",
+          model: "Artist",
+          select: "name avatar_url",
+        })
+        .lean();
+    } else {
+      albums = await Album.aggregate([{ $sample: { size: 3 } }]);
+
+      const artistIdSet = new Set(
+        albums.flatMap((album) =>
+          Array.isArray(album.artist_ids)
+            ? album.artist_ids.map((id) => id.toString())
+            : []
+        )
+      );
+
+      const artists = await Artist.find({
+        _id: { $in: Array.from(artistIdSet) },
+      })
+        .select("name avatar_url")
+        .lean();
+
+      const artistMap = Object.fromEntries(
+        artists.map((a) => [a._id.toString(), a])
+      );
+
+      albums = albums.map((album) => ({
         ...album,
-        artist: artist_ids,
+        artist_ids: (album.artist_ids || []).map(
+          (id) => artistMap[id.toString()] || { name: null, avatar_url: null }
+        ),
       }));
-
-      return {
-        total: totalAlbums,
-        limit: limitNum,
-        page: pageNum,
-        totalPages: totalAlbums > 0 ? Math.ceil(totalAlbums / limitNum) : 1,
-        items: formattedAlbums,
-      };
-    } catch (err) {
-      console.error("Error fetching albums by artist names:", err);
-      return { success: false, message: "Server error", status: 500 };
     }
+
+
+    const transformedAlbums = albums.map((album) => ({
+      ...album,
+      artist_url:
+        album.artist_ids?.map?.((a) => a.avatar_url).filter(Boolean) || [],
+    }));
+
+
+    const cleaned = this.cleanedAlbumData(transformedAlbums);
+
+    return {
+      total,
+      limit,
+      page,
+      totalPages: total > 0 ? Math.ceil(total / limit) : 1,
+      items: cleaned,
+    };
   }
 }
 

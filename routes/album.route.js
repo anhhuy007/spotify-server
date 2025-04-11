@@ -4,19 +4,51 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/topAlbum", albumController.getTopAlbum);
-router.get("/mostAlbum", albumController.getMostAlbum);
-router.get("/alsoLike", albumController.getAlsoLike);
+router.get(
+  "/topAlbum",
+  authMiddleware.authenticateUser,
+  albumController.getTopAlbum
+);
+router.get(
+  "/mostAlbum",
+  authMiddleware.authenticateUser,
+  albumController.getMostAlbum
+);
+router.get(
+  "/alsoLike",
+  authMiddleware.authenticateUser,
+  albumController.getAlsoLike
+);
 router.get(
   "/popular",
   authMiddleware.authenticateUser,
   albumController.getPopularAlbums
 );
-router.get("/new", albumController.getNewAlbums);
-router.get("/by-artists", albumController.getAlbumsByArtistNames);
-router.get("/:id", albumController.getAlbumById);
-router.get("/:id/songs", albumController.getAlbumSongs);
+router.get(
+  "/new",
+  authMiddleware.authenticateUser,
+  albumController.getNewAlbums
+);
+router.get(
+  "/by-artists",
+  authMiddleware.authenticateUser,
+  albumController.getAlbumsByArtistNames
+);
+router.get(
+  "/:id",
+  authMiddleware.authenticateUser,
+  albumController.getAlbumById
+);
+router.get(
+  "/:id/songs",
+  authMiddleware.authenticateUser,
+  albumController.getAlbumSongs
+);
 
-router.get("/", albumController.getAlbumsWithFilter);
+router.get(
+  "/",
+  authMiddleware.authenticateUser,
+  albumController.getAlbumsWithFilter
+);
 
 export default router;
