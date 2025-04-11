@@ -4,15 +4,28 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/topSong", songController.getTopSong);
-router.get("/mostSong", songController.getMostSong);
+router.get(
+  "/topSong",
+  authMiddleware.authenticateUser,
+  songController.getTopSong
+);
+router.get(
+  "/mostSong",
+  authMiddleware.authenticateUser,
+  songController.getMostSong
+);
 router.get(
   "/popular/:id",
   authMiddleware.authenticateUser,
   songController.getPopularSongs
 );
-router.get("/new", songController.getNewSongs);
-router.get("/random", songController.getRandomSongs);
-router.get("/:id", songController.getSongById);
+router.get("/new", authMiddleware.authenticateUser, songController.getNewSongs);
+router.get(
+  "/random",
+  authMiddleware.authenticateUser,
+  songController.getRandomSongs
+);
+router.get("/:id", authMiddleware.authenticateUser, songController.getSongById);
+
 
 export default router;

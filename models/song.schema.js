@@ -15,6 +15,11 @@ const songSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    planTypes: {
+      type: [String],
+      enum: ['free', 'mini', 'student', 'individual'],  // define all valid plans
+      default: ['free'],
+    },
     like_count: {
       type: Number,
       default: 0,

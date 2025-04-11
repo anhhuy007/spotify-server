@@ -99,7 +99,6 @@ const getAlbumById = asyncHandler(async (req, res) => {
 const getAlbumSongs = asyncHandler(async (req, res) => {
   try {
     const response = await AlbumService.getAlbumSongs(req.params.id, req.query);
-    console.log("Get album songs: ", response);
 
     res
       .status(200)
