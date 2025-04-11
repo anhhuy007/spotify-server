@@ -19,7 +19,6 @@ router.use("/auth", authRoutes);
 router.use("/user", userRoutes);
 router.use("/artist", artistRoutes);
 router.use("/album", albumRoutes);
-router.use("/album", albumRoutes);
 router.use("/search", searchRoutes);
 router.use("/genre", genreRoutes);
 router.use("/artist", artistRoutes);
@@ -28,7 +27,6 @@ router.use("/subscription", subscriptionRoutes);
 router.use("/notification", notificationRoutes);
 router.use("/playlist", playlistRoutes);
 router.use("/follower", followerRoutes);
-router.use("/playlist", playlistRoutes);
 router.use("/chatbot", chatbotRoutes);
 
 
