@@ -46,6 +46,26 @@ const addFollower = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteFollower1 = asyncHandler(async (req, res) => {
+  const { user_id, artist_id } = req.body;
+  try {
+    const follower = await FollowerService.deleteFollower1(user_id, artist_id);
+    if (follower) {
+      res.status(201).json(
+        helperFunc.successResponse(true, "UnFollowed successfully", {
+          _id: follower._id,
+          user_id: follower.user_id,
+          artist_id: follower.artist_id,
+        })
+      );
+    } else {
+      res.status(400).json(helperFunc.errorResponse(false, "Already unfollow"));
+    }
+  } catch (error) {
+    res.status(500).json(helperFunc.errorResponse(false, "Failed to unfollow"));
+  }
+});
+
 
 
 const deleteFollower = asyncHandler(async (req, res) => {
@@ -109,6 +129,29 @@ const getCountFollowedArtists = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllArtistsWithFollowStatus = asyncHandler(async (req, res) => {
+  try {
+    const followedArtists = await FollowerService.getAllArtistsWithFollowStatus(
+      req.user._id
+    );
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(
+          true,
+          "List followed artists retrieved",
+          followedArtists
+        )
+      );
+  } catch (error) {
+    res
+      .status(500)
+      .json(
+        helperFunc.errorResponse(false, "Failed to retrieve list followed artists")
+      );
+  }
+});
+
 
 
 export default {
@@ -116,5 +159,7 @@ export default {
   getFollowedArtists,
   getCountFollowedArtists,
   deleteFollower,
+  deleteFollower1,
   checkFollowerExists,
+  getAllArtistsWithFollowStatus,
 };

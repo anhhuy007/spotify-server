@@ -15,6 +15,17 @@ router.post(
   authMiddleware.authenticateUser,
   followerController.addFollower
 );
+
+router.post(
+  "/delete",
+  authMiddleware.authenticateUser,
+  followerController.deleteFollower1
+);
+router.get(
+  "/listArtist",
+  authMiddleware.authenticateUser,
+  followerController.getAllArtistsWithFollowStatus
+);
 router.get(
   "/list",
   authMiddleware.authenticateUser,
@@ -30,5 +41,7 @@ router.delete(
   authMiddleware.authenticateUser,
   followerController.deleteFollower
 );
+
+
 
 export default router;

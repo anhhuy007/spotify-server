@@ -24,34 +24,73 @@ class FollowerService {
     };
   };
 
+  deleteFollower1 = async (user_id, artist_id) => {
+      const deletedFollower = await Follower.findOneAndDelete({
+        user_id,
+        artist_id,
+      });
+
+      if (!deletedFollower) {
+        return null;
+      }
+
+      return {
+        _id: deletedFollower._id,
+        user_id: deletedFollower.user_id,
+        artist_id: deletedFollower.artist_id,
+      };
+  };
+
   getCountFollowedArtists = async (user_id) => {
     return await Follower.countDocuments({ user_id });
   };
 
   getFollowedArtists = async (user_id) => {
-      const albums = await Follower.find({ user_id })
-           .select("artist_id")
-        .populate({
-          path: "artist_id",
-          model: Artist,
-          select: "avatar_url name followers"
-        });
-    
+    const albums = await Follower.find({ user_id })
+      .select("artist_id")
+      .populate({
+        path: "artist_id",
+        model: Artist,
+        select: "avatar_url name followers",
+      });
+
     const re = albums.map((album) => ({
       _id: album.artist_id._id,
       name: album.artist_id.name,
       image_url: album.artist_id.avatar_url,
       flCount: album.artist_id.followers,
     }));
-          return re
-    
-    
+    return re;
   };
 
   deleteById = async (_id) => {
     return await Follower.findByIdAndDelete(_id);
   };
+
+  getAllArtistsWithFollowStatus = async (userId) => {
+    // Lấy tất cả artists
+    const artists = await Artist.find().select("_id name avatar_url");
+
+    // Lấy danh sách artist_ids mà user đang follow
+    const followedArtists = await Follower.find({ user_id: userId })
+      .select("artist_id")
+      .lean();
+
+    // Tạo set các artist_id đã follow để kiểm tra nhanh
+    const followedArtistIds = new Set(
+      followedArtists.map((item) => item.artist_id.toString())
+    );
+
+    // Map danh sách artists và thêm trường isFollow
+    return artists.map((artist) => ({
+      _id: artist._id,
+      name: artist.name,
+      image_url: artist.avatar_url,
+      isFollow: followedArtistIds.has(artist._id.toString()),
+    }));
+  };
 }
+
 
 
 export default new FollowerService();
