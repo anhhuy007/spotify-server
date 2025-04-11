@@ -107,6 +107,8 @@ class AuthService {
   async refreshAccessToken(refreshToken) {
     if (!refreshToken) throw new Error("Invalid token");
 
+    console.log("Refresh token: ", refreshToken);
+
     const token = await Token.findOne({ token: refreshToken });
     if (!token) throw new Error("Invalid token");
 
@@ -173,6 +175,15 @@ class AuthService {
 
       const accessToken = this.generateAccessToken(user);
       const refreshToken = this.generateRefreshToken(user);
+
+      // save refresh token in the database
+      const newToken = new Token({
+        userId: user._id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      });
+      await newToken.save();
+
       return {
         user,
         tokens: {
