@@ -146,7 +146,7 @@ async function updateSongPlanTypes() {
         .sort(() => 0.5 - Math.random()) // shuffle
         .slice(0, numberOfPlans); // pick N random plans
 
-      song.planTypes = randomPlans;
+      song.plan_types = randomPlans;
       await song.save();
     }
 
@@ -155,6 +155,7 @@ async function updateSongPlanTypes() {
     console.error("❌ Error updating planTypes for songs:", error);
   }
 }
+
 
 async function uploadData() {
   // await uploadUsers();
