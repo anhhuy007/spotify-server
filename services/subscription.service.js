@@ -1,5 +1,5 @@
 import Subscription from "../models/subscription.schema.js";
-
+import User from "../models/user.schema.js";
 class SubscriptionService {
   async createSubscription(userId, startDate, endDate, subscriptionType, total, newCharge) {
     if (!userId || !startDate || !endDate || !subscriptionType) {
@@ -18,16 +18,25 @@ class SubscriptionService {
       throw new Error("Invalid subscription type");
     }
 
-    const subscription = new Subscription({
+    const newSubscription = new Subscription({
       userId,
       startDate,
       endDate,
       subscriptionType,
       total,
-      newCharge
+      newCharge,
+      isActive: true
     });
 
-    return subscription.save();
+    const subscription = await newSubscription.save();
+
+    // update User isPremium field to true
+    const user = await User.findById(userId);
+    const result = await user.updateOne({ premium: true });
+
+    console.log("User updated: ", result);
+    
+    return subscription;
   }
 
   async checkUserSubscription(userId) {
@@ -40,13 +49,17 @@ class SubscriptionService {
     });
 
     // check if subscription is active
-    if (subscription && subscription.endDate > new Date()) {
+    if (subscription && subscription.endDate > new Date() && subscription.isActive) {
       return subscription;
     }
 
     // if subscription is not active, set isActive to false
     subscription.isActive = false;
     await subscription.save();
+
+    // update User isPremium field to false
+    const user = await User.findById(userId);
+    await user.updateOne({ premium: false });
 
     return null;
   }
@@ -66,6 +79,9 @@ class SubscriptionService {
 
     subscription.isActive = false;
     await subscription.save();
+
+    const user = await User.findById(userId);
+    await user.updateOne({ premium: false });
 
     return subscription;
   }
@@ -87,6 +103,10 @@ class SubscriptionService {
     // if subscription is not active, set isActive to false
     subscription.isActive = false;
     await subscription.save();
+
+    // update User isPremium field to false
+    const user = await User.findById(userId);
+    await user.updateOne({ premium: false });
 
     return null;
   }

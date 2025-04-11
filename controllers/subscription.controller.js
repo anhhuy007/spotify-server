@@ -21,7 +21,11 @@ const createSubscription = asyncHandler(async (req, res) => {
     const user = await User.findById(userId);
 
     // send payment notification & email to announce subscription
-    await helperFunc.sendSubscriptionEmail(user.username, user.email, subscription);
+    await helperFunc.sendSubscriptionEmail(
+      user.username,
+      user.email,
+      subscription
+    );
 
     await notificationService.sendNotification(
       userId,
@@ -61,7 +65,7 @@ const checkUserSubscription = asyncHandler(async (req, res) => {
           helperFunc.successResponse(true, "Subscription found", subscription)
         );
     } else {
-      helperFunc
+      res
         .status(200)
         .json(helperFunc.successResponse(true, "No active subscription"));
     }
@@ -101,7 +105,9 @@ const cancelSubscription = asyncHandler(async (req, res) => {
 });
 
 const getUserSubscription = asyncHandler(async (req, res) => {
-  const { userId } = req.params.userId;
+  const userId = req.params.userId;
+
+  console.log("Get subscription for userId: ", userId);
 
   try {
     const subscription = await subscriptionService.getUserSubscription(userId);
