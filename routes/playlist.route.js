@@ -6,6 +6,11 @@ const router = express.Router();
 
 
 
+router.get(
+  "/user-playlist",
+  authMiddleware.authenticateUser,
+  playlistController.getUserPlaylist
+);
 
 // Public routes
 router.get("/top", playlistController.getTopPlaylists);
@@ -71,11 +76,6 @@ router.delete(
 );
 
 
-router.get(
-  "/user-playlist",
-  authMiddleware.authenticateUser,
-  playlistController.getUserPlaylist
-);
 router.post(
   "/create-playlist",
   authMiddleware.authenticateUser,
