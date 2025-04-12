@@ -17,6 +17,24 @@ const getGenres = asyncHandler(async (req, res) => {
       .json(helperFunc.errorResponse(false, "Failed to get genres"));
   }
 });
+
+const getGenreById = asyncHandler(async (req, res) => {
+  try {
+    const response = await GenreService.getGenreById(req.params.id);
+    res
+      .status(200)
+      .json(
+        helperFunc.successResponse(true, "Genre retrieved", response)
+      );
+  } catch (error) {
+    console.log("Get genres error: ", error);
+    res
+      .status(400)
+      .json(helperFunc.errorResponse(false, "Failed to get genres"));
+  }
+});
+
 export default{
     getGenres,
+    getGenreById
 }
