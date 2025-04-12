@@ -149,7 +149,6 @@ class SongService {
       title: song.title,
       lyric: song.lyrics,
       is_premium: song.is_premium,
-      planTypes: song.planTypes,  
       like_count: song.like_count,
       mp3_url: song.mp3_url,
       image_url: song.image_url,

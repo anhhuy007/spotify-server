@@ -48,6 +48,10 @@ const userSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    premium: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       default: "user",

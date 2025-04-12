@@ -5,7 +5,6 @@ import Token from "../models/token.schema.js";
 import OTP from "../models/otp.schema.js";
 import OTPConfig from "../utils/OTPConfig.js";
 import { OAuth2Client } from "google-auth-library";
-import { Aggregate } from "mongoose";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -108,11 +107,13 @@ class AuthService {
   async refreshAccessToken(refreshToken) {
     if (!refreshToken) throw new Error("Invalid token");
 
+    console.log("Refresh token: ", refreshToken);
+
     const token = await Token.findOne({ token: refreshToken });
     if (!token) throw new Error("Invalid token");
 
     if (token.expiresAt < new Date()) {
-      await Token.delete({ token: refreshToken });
+      await Token.deleteOne({ token: refreshToken });
       throw new Error("Token expired");
     }
 
@@ -174,6 +175,15 @@ class AuthService {
 
       const accessToken = this.generateAccessToken(user);
       const refreshToken = this.generateRefreshToken(user);
+
+      // save refresh token in the database
+      const newToken = new Token({
+        userId: user._id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      });
+      await newToken.save();
+
       return {
         user,
         tokens: {
