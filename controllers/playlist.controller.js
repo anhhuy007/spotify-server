@@ -103,7 +103,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
     const response = await PlaylistService.createPlaylist({
       ...req.body,
       owner_id: userId,
-      ...req.query
+      ...req.query,
     });
     res
       .status(201)
@@ -218,6 +218,8 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
   try {
+    console.log("Get user playlist2: ", req.user, req.query);
+
     const userId = req.user._id;
     const response = await PlaylistService.getUserPlaylists(userId, req.query);
     res
@@ -229,7 +231,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
     console.log("Get user playlists error: ", error);
     res
       .status(400)
-      .json(helperFunc.errorResponse(false, "Failed to get user playlists"));
+      .json(helperFunc.errorResponse(false, "to get user playlists"));
   }
 });
 
@@ -243,7 +245,9 @@ const getUserPlaylist = asyncHandler(async (req, res) => {
     console.log("Get playlist error: ", error);
     res
       .status(400)
-      .json(helperFunc.errorResponse(false, "Failed to get user playlist"));
+      .json(
+        helperFunc.errorResponse(false, "Unsuccessful to get user playlist")
+      );
   }
 });
 const createNewPlaylist = asyncHandler(async (req, res) => {
@@ -305,7 +309,6 @@ const getPlaylistSongs = asyncHandler(async (req, res) => {
 });
 const removeSongFromPlaylist = asyncHandler(async (req, res) => {
   try {
-    
     const response = await PlaylistService.removeSongFromPlaylist(
       req.params.playlistId,
       req.params.songId
@@ -348,7 +351,9 @@ const updatePlaylistInfo = async (req, res) => {
 
 const removePlaylist = async (req, res) => {
   try {
-    const response = await PlaylistService.removePlaylist(req.params.playlistId);
+    const response = await PlaylistService.removePlaylist(
+      req.params.playlistId
+    );
     res
       .status(200)
       .json(helperFunc.successResponse(true, "Playlist deleted", response));
@@ -360,7 +365,10 @@ const removePlaylist = async (req, res) => {
 };
 const getRandomSongs = asyncHandler(async (req, res) => {
   try {
-    const songs = await PlaylistService.getRandomSongs(req.params.id, req.query);
+    const songs = await PlaylistService.getRandomSongs(
+      req.params.id,
+      req.query
+    );
 
     res
       .status(200)
@@ -398,5 +406,5 @@ export default {
   removeSongFromPlaylist,
   updatePlaylistInfo,
   removePlaylist,
-  getRandomSongs
+  getRandomSongs,
 };

@@ -3,7 +3,6 @@ import Playlist from "../models/playlist.schema.js";
 import Song from "../models/song.schema.js";
 import User from "../models/user.schema.js"; // Assuming you have a User model
 import helperFunc from "../utils/helperFunc.js";
-import Song from "../models/song.schema.js";
 class PlaylistService {
   cleanedPlaylistData(playlists) {
     return playlists.map(({ song_ids, owner_id, ...rest }) => ({

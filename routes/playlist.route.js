@@ -4,8 +4,11 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-
-
+router.get(
+  "/user-playlist",
+  authMiddleware.authenticateUser,
+  playlistController.getUserPlaylist
+);
 
 // Public routes
 router.get("/top", playlistController.getTopPlaylists);
@@ -20,7 +23,6 @@ router.get(
   authMiddleware.authenticateUser,
   playlistController.getUserPlaylists
 );
-
 
 // Protected routes - require authentication
 // User playlist management
@@ -70,12 +72,6 @@ router.delete(
   playlistController.removeSongFromPlaylist
 );
 
-
-router.get(
-  "/user-playlist",
-  authMiddleware.authenticateUser,
-  playlistController.getUserPlaylist
-);
 router.post(
   "/create-playlist",
   authMiddleware.authenticateUser,

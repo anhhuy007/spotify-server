@@ -21,29 +21,27 @@ class AlbumService {
     }
   };
   getMostAlbum = async () => {
-
-      return await Album.findOne({}, "_id title cover_url play_count").sort({
-        play_count: -1,
-      }); // Sắp xếp giảm dần theo play_count
-
+    return await Album.findOne({}, "_id title cover_url play_count").sort({
+      play_count: -1,
+    }); // Sắp xếp giảm dần theo play_count
   };
 
   getAlsoLike = async () => {
-      // Query albums and populate with artist information
-      const albums = await Album.find({})
-        .select("_id title cover_url artist_ids")
-        .populate({
-          path: "artist_ids",
-          model: Artist,
-          select: "name",
-        });
-      // .sort({ like_count: -1 })
-      return albums.map((album) => ({
-        _id: album._id,
-        title: album.title,
-        artist_name: album.artist_ids.map((artist) => artist.name),
-        cover_url: album.cover_url,
-      }));
+    // Query albums and populate with artist information
+    const albums = await Album.find({})
+      .select("_id title cover_url artist_ids")
+      .populate({
+        path: "artist_ids",
+        model: Artist,
+        select: "name",
+      });
+    // .sort({ like_count: -1 })
+    return albums.map((album) => ({
+      _id: album._id,
+      title: album.title,
+      artist_name: album.artist_ids.map((artist) => artist.name),
+      cover_url: album.cover_url,
+    }));
   };
 
   async getPopularAlbums(options = {}) {
@@ -210,14 +208,36 @@ class AlbumService {
     };
   }
 
+  // async getAlbumById(albumId) {
+  //   const album = await Album.findById(albumId)
+  //     .populate({
+  //       path: "artist_ids",
+  //       select: "name avatar_url",
+  //     })
+  //     .populate({
+  //       path: "song_ids",
+  //       select: "title image_url",
+  //     })
+  //     .lean();
+
+  //   if (!album) {
+  //     throw new Error("Album not found");
+  //   }
+
+  //   return this.cleanedAlbumData([album])[0];
+  // }
   async getAlbumById(albumId) {
+    console.log("[AlbumService] Fetching album by ID");
+
     const album = await Album.findById(albumId)
       .populate({
         path: "artist_ids",
+        model: "Artist",
         select: "name avatar_url",
       })
       .populate({
         path: "song_ids",
+        model: "Song",
         select: "title image_url",
       })
       .lean();
@@ -226,7 +246,15 @@ class AlbumService {
       throw new Error("Album not found");
     }
 
-    return this.cleanedAlbumData([album])[0];
+    const transformedAlbum = {
+      ...album,
+      artist_url:
+        album.artist_ids?.map?.((a) => a.avatar_url).filter(Boolean) || [],
+    };
+
+    const cleaned = this.cleanedAlbumData([transformedAlbum]);
+
+    return cleaned[0];
   }
 
   async getAlbumSongs(albumId, options = {}) {
@@ -327,7 +355,6 @@ class AlbumService {
       : [artistNames];
     const baseQuery = { artist_names: { $in: artistNameArray } };
 
-
     let total = await Album.countDocuments(baseQuery);
     let albums = [];
 
@@ -371,13 +398,11 @@ class AlbumService {
       }));
     }
 
-
     const transformedAlbums = albums.map((album) => ({
       ...album,
       artist_url:
         album.artist_ids?.map?.((a) => a.avatar_url).filter(Boolean) || [],
     }));
-
 
     const cleaned = this.cleanedAlbumData(transformedAlbums);
 
