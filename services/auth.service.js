@@ -34,9 +34,9 @@ class AuthService {
   }
 
   async signup(data) {
-    const { username, email, password } = data;
+    let { username, email, password, dob, avatarUrl } = data;
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !dob) {
       throw new Error("Missing required fields");
     }
 
@@ -47,14 +47,27 @@ class AuthService {
       throw new Error("Account already exists");
     }
 
+    if (!avatarUrl) {
+      // default avatar
+      avatarUrl =
+        "https://i.pinimg.com/1200x/d7/fa/93/d7fa938f70599a3213088646e35eb690.jpg";
+    }
+
+    // convert birthday to date
     const newUser = new User({
       username,
       email,
       password: bycrypt.hashSync(password, 10),
+      avatar_url: avatarUrl,
+      dob: new Date(dob),
     });
     const savedUser = await newUser.save();
 
-    return savedUser;
+    // return user and tokens
+    const userObj = savedUser.toObject();
+    delete userObj.password;
+
+    return userObj;
   }
 
   async login(data) {
@@ -62,7 +75,7 @@ class AuthService {
     let user = await User.findOne({ email });
     if (!user) throw new Error("User not found");
 
-    const isValidPassword = bycrypt.compare(password, user.password);
+    const isValidPassword = bycrypt.compareSync(password, user.password);
     if (!isValidPassword) {
       throw new Error("Invalid password");
     }
@@ -98,7 +111,7 @@ class AuthService {
     if (!token) throw new Error("Invalid token");
 
     if (token.expiresAt < new Date()) {
-      await Token.delete({ token: refreshToken });
+      await Token.deleteOne({ token: refreshToken });
       throw new Error("Token expired");
     }
 
@@ -134,7 +147,6 @@ class AuthService {
     if (!tokenId) throw new Error("Missing tokenId");
 
     try {
-      console.log("Verifying Google user...");
       const ticket = await client.verifyIdToken({
         idToken: tokenId,
         audience: process.env.GOOGLE_CLIENT_ID,
@@ -144,8 +156,6 @@ class AuthService {
       const googleId = payload["sub"];
       const email = payload["email"];
       const username = payload["name"];
-
-      console.log("Google user:", { googleId, email, username });
 
       let user = await User.findOne({
         $or: [{ email }, { googleId }],
@@ -163,6 +173,15 @@ class AuthService {
 
       const accessToken = this.generateAccessToken(user);
       const refreshToken = this.generateRefreshToken(user);
+
+      // save refresh token in the database
+      const newToken = new Token({
+        userId: user._id,
+        token: refreshToken,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      });
+      await newToken.save();
+
       return {
         user,
         tokens: {
@@ -192,6 +211,7 @@ class AuthService {
       otp,
       expiry: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
     });
+
     await savedOTP.save();
 
     // send OTP to user
@@ -211,24 +231,56 @@ class AuthService {
       throw new Error("OTP expired");
     }
 
-    // delete OTP
-    await OTP.deleteOne({ email, otp });
+    // mark OTP as verified
+    existingOTP.verified = true;
+    await existingOTP.save();
 
     return true;
   }
 
   async resetPassword(data) {
-    const { email, password } = data;
-    if (!email || !password) throw new Error("Missing required fields");
+    const { email, password, otp } = data;
+    if (!email || !password || !otp) throw new Error("Missing required fields");
+
+    const existingOTP = await OTP.findOne({
+      email,
+      otp,
+      verified: true,
+    });
+    if (!existingOTP)
+      throw new Error("Invalid or expired OTP. Please try again.");
+
+    if (existingOTP.expiry < new Date()) {
+      await OTP.deleteOne({ email, otp });
+      throw new Error("OTP expired");
+    }
 
     const user = await User.findOne({ email });
     if (!user) throw new Error("User not found");
+
+    if (password.length < 8) {
+      throw new Error("Password must be at least 8 characters long");
+    }
 
     // update password
     user.password = bycrypt.hashSync(password, 10);
     await user.save();
 
     return true;
+  }
+
+  async checkUsernameExists(username) {
+    if (!username) throw new Error("Missing username");
+
+    const user = await User.findOne({ username });
+    return !!user;
+  }
+
+  async checkEmailExists(email) {
+    if (!email) throw new Error("Missing email");
+
+    const user = await User.findOne({ email });
+    return !!user;
   }
 }
 
