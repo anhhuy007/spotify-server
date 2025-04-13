@@ -64,39 +64,6 @@ const getPlaylistsWithFilter = asyncHandler(async (req, res) => {
   }
 });
 
-// const getPlaylistById = asyncHandler(async (req, res) => {
-//   try {
-//     const response = await PlaylistService.getPlaylistById(req.params.id);
-//     res
-//       .status(200)
-//       .json(helperFunc.successResponse(true, "Playlist retrieved", response));
-//   } catch (error) {
-//     console.log("Get playlist by id error: ", error);
-//     res
-//       .status(400)
-//       .json(helperFunc.errorResponse(false, "Failed to get playlist"));
-//   }
-// });
-
-// const getPlaylistSongs = asyncHandler(async (req, res) => {
-//   try {
-//     const response = await PlaylistService.getPlaylistSongs(
-//       req.params.id,
-//       req.query
-//     );
-//     res
-//       .status(200)
-//       .json(
-//         helperFunc.successResponse(true, "Playlist songs retrieved", response)
-//       );
-//   } catch (error) {
-//     console.log("Get playlist songs error: ", error);
-//     res
-//       .status(400)
-//       .json(helperFunc.errorResponse(false, "Failed to get playlist songs"));
-//   }
-// });
-
 const createPlaylist = asyncHandler(async (req, res) => {
   try {
     const userId = req.user._id; // Assuming user info is available from auth middleware
@@ -169,52 +136,6 @@ const deletePlaylist = asyncHandler(async (req, res) => {
       .json(helperFunc.errorResponse(false, "Failed to delete playlist"));
   }
 });
-
-// const addSongToPlaylist = asyncHandler(async (req, res) => {
-//   try {
-//     const userId = req.user._id;
-//     const { playlistId, songId } = req.params;
-//     const response = await PlaylistService.addSongToPlaylist(
-//       playlistId,
-//       songId,
-//       userId
-//     );
-//     res
-//       .status(200)
-//       .json(
-//         helperFunc.successResponse(true, "Song added to playlist", response)
-//       );
-//   } catch (error) {
-//     console.log("Add song to playlist error: ", error);
-//     res
-//       .status(400)
-//       .json(helperFunc.errorResponse(false, "Failed to add song to playlist"));
-//   }
-// });
-
-// const removeSongFromPlaylist = asyncHandler(async (req, res) => {
-//   try {
-//     const userId = req.user._id;
-//     const { playlistId, songId } = req.params;
-//     const response = await PlaylistService.removeSongFromPlaylist(
-//       playlistId,
-//       songId,
-//       userId
-//     );
-//     res
-//       .status(200)
-//       .json(
-//         helperFunc.successResponse(true, "Song removed from playlist", response)
-//       );
-//   } catch (error) {
-//     console.log("Remove song from playlist error: ", error);
-//     res
-//       .status(400)
-//       .json(
-//         helperFunc.errorResponse(false, "Failed to remove song from playlist")
-//       );
-//   }
-// });
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
   try {

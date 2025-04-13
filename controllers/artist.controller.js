@@ -172,7 +172,6 @@ const getArtistSongs = asyncHandler(async (req, res) => {
       req.params.id,
       req.query
     );
-    console.log("Get artitst songs: ", response);
 
     res
       .status(200)

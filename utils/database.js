@@ -32,7 +32,6 @@ async function disconnectDB() {
 
 async function uploadUsers() {
   const collectionName = User.collection.name;
-  console.log("📚 Collection name:", collectionName);
   console.log("✅ Uploading users to MongoDB...");
 
   await User.collection.dropIndexes();
@@ -49,9 +48,7 @@ async function uploadUsers() {
 
 async function updateUserSchema() {
   try {
-    console.log("🔄 Updating User schema...");
     const users = await User.find();
-    console.log(`Found ${users.length} users to update`);
 
     for (const user of users) {
       if (users.dob && user.dob.getTime() !== new Date(user.createdAt).getTime()) {
@@ -117,7 +114,6 @@ async function updateAlbumReleaseDate() {
 async function updateSongSchema() {
   try {
     const songs = await Song.find();
-    console.log(`Found ${songs.length} songs to update`);
     for (const song of songs) {
       if (song.like_count && song.like_count !== 0) {
         continue;
@@ -156,6 +152,26 @@ async function updateSongPlanTypes() {
   }
 }
 
+async function updateArtistFollowers() {
+  try {
+    const artists = await Artist.find();
+    for (const artist of artists) {
+      // if (artist.follower_count && artist.follower_count !== 0) {
+      //   continue;
+      // }
+
+      // generate random follower count between 0 and 1000
+      const followerCount = Math.floor(Math.random() * 1001);
+      artist.followers = followerCount;
+      await artist.save();
+    }
+
+    console.log("✅ Artist follower count updated successfully");
+  } catch (error) {
+    console.error("❌ Artist follower count update error:", error);
+  } 
+}
+
 
 async function uploadData() {
   // await uploadUsers();
@@ -163,7 +179,8 @@ async function uploadData() {
   // await updateAlbumReleaseDate();
   // await updateUserSchema();
   // updateSongSchema();
-  updateSongPlanTypes();
+  // updateSongPlanTypes();
+  updateArtistFollowers();
 }
 
 export { connectDB, disconnectDB, uploadData };

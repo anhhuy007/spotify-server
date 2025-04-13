@@ -107,8 +107,6 @@ class AuthService {
   async refreshAccessToken(refreshToken) {
     if (!refreshToken) throw new Error("Invalid token");
 
-    console.log("Refresh token: ", refreshToken);
-
     const token = await Token.findOne({ token: refreshToken });
     if (!token) throw new Error("Invalid token");
 

@@ -107,8 +107,6 @@ const cancelSubscription = asyncHandler(async (req, res) => {
 const getUserSubscription = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
 
-  console.log("Get subscription for userId: ", userId);
-
   try {
     const subscription = await subscriptionService.getUserSubscription(userId);
 

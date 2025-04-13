@@ -33,8 +33,6 @@ class SubscriptionService {
     // update User isPremium field to true
     const user = await User.findById(userId);
     const result = await user.updateOne({ premium: true });
-
-    console.log("User updated: ", result);
     
     return subscription;
   }

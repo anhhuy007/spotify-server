@@ -227,8 +227,6 @@ class AlbumService {
   //   return this.cleanedAlbumData([album])[0];
   // }
   async getAlbumById(albumId) {
-    console.log("[AlbumService] Fetching album by ID");
-
     const album = await Album.findById(albumId)
       .populate({
         path: "artist_ids",
@@ -341,8 +339,6 @@ class AlbumService {
   }
 
   async getAlbumsByArtistNames(options = {}) {
-    console.log("[AlbumService] Fetching albums by artist names");
-
     const {
       artistNames = [],
       page = 1,

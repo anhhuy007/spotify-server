@@ -424,8 +424,6 @@ class PlaylistService {
       song_count: playlist.song_ids.length,
     }));
 
-    console.log("User Playlists:", re.length);
-
     return re;
   }
 
@@ -479,7 +477,6 @@ class PlaylistService {
   async createNewPlaylist(user, options = {}) {
     try {
       const { id, name, image } = options;
-      console.log("Create new playlist with options: ", options);
       const newPlaylist = new Playlist({
         name,
         cover_url: image,
@@ -508,7 +505,6 @@ class PlaylistService {
   }
 
   transformSongData(song) {
-    console.log("Transforming song:", song);
     return {
       _id: song._id?.toString() || "",
       title: song.title || "Unknown",
