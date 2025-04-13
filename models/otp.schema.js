@@ -15,6 +15,10 @@ const otpSchema = new Schema(
       type: Date,
       required: true,
     },
+    verified: {
+      type: Boolean,
+      default: false,
+    }
   },
   {
     versionKey: false,

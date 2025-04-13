@@ -8,28 +8,39 @@ const albumSchema = new Schema(
       required: true,
     },
     artist_ids: {
-      type: [String],
+      type: [Schema.Types.ObjectId],
       required: true,
     },
     release_date: {
       type: Date,
       default: null,
     },
-    like_count: { 
-        type: Number,
-        default: 0
+    like_count: {
+      type: Number,
+      default: 0,
+    },
+    play_count: {
+      type: Number,
+      default: 0
     },
     cover_url: {
       type: String,
       default: "",
     },
-    song_ids: {
-      type: [String],
-      required: true,
-    },
-    create_at: {
-      type: Date,
-    },
+    artist_ids: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Artist",
+        required: true,
+      },
+    ],
+    song_ids: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Song",
+        required: true,
+      },
+    ],
   },
   {
     versionKey: false,
@@ -38,7 +49,6 @@ const albumSchema = new Schema(
   }
 );
 
-// Remove any fields not in schema during transformation
 albumSchema.set("strict", true);
 
 const Album = mongoose.model("Album", albumSchema);
