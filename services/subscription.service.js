@@ -51,9 +51,11 @@ class SubscriptionService {
       return subscription;
     }
 
-    // if subscription is not active, set isActive to false
-    subscription.isActive = false;
-    await subscription.save();
+    if (subscription) {
+      // if subscription is not active, set isActive to false
+      subscription.isActive = false;
+      await subscription.save();
+    }
 
     // update User isPremium field to false
     const user = await User.findById(userId);

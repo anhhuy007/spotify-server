@@ -34,7 +34,7 @@ const userSchema = new Schema(
     },
     avatar_url: {
       type: String,
-      default: "default.image",
+      default: "",
     },
     language: {
       type: String,

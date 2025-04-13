@@ -33,6 +33,18 @@ class AuthService {
     );
   }
 
+  generateRandomAvatar() {
+    const avatars = [
+      "https://i.pinimg.com/736x/81/ec/02/81ec02c841e7aa13d0f099b5df02b25c.jpg",
+      "https://i.pinimg.com/736x/31/87/e2/3187e244a65cf294cd2b8bddafea0947.jpg",
+      "https://i.pinimg.com/736x/0b/76/09/0b7609f21e9b4273ddf2858757871d5c.jpg",
+      "https://i.pinimg.com/736x/49/c5/db/49c5db552ac3fc2475bac68141a1b4b3.jpg"
+    ];
+
+    const randomIndex = Math.floor(Math.random() * avatars.length);
+    return avatars[randomIndex];
+  }
+
   async signup(data) {
     let { username, email, password, dob, avatarUrl } = data;
 
@@ -49,8 +61,7 @@ class AuthService {
 
     if (!avatarUrl) {
       // default avatar
-      avatarUrl =
-        "https://i.pinimg.com/1200x/d7/fa/93/d7fa938f70599a3213088646e35eb690.jpg";
+      avatarUrl = this.generateRandomAvatar();
     }
 
     // convert birthday to date
@@ -167,6 +178,7 @@ class AuthService {
           username,
           email,
           googleId,
+          avatar_url: this.generateRandomAvatar(),
         });
         await user.save();
       }
