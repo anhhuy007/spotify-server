@@ -139,8 +139,6 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
   try {
-    console.log("Get user playlist2: ", req.user, req.query);
-
     const userId = req.user._id;
     const response = await PlaylistService.getUserPlaylists(userId, req.query);
     res
